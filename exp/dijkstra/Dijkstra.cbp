@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Dijkstra" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Example1">
+				<Option output="bin/Dijkstra-ex1" prefix_auto="1" extension_auto="1" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+			</Target>
+			<Target title="Example Cities">
+				<Option output="bin/Dijkstra" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="`pkg-config --cflags boost`" />
+		</Compiler>
+		<Unit filename="src/astar-cities.cpp">
+			<Option target="Example Cities" />
+		</Unit>
+		<Unit filename="src/ex1.cpp">
+			<Option target="Example1" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
