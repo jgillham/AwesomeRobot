@@ -6,32 +6,65 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
-				<Option output="bin/d/Dense Graph" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/d/" />
+			<Target title="Memory Allocation Test">
+				<Option output="bin/mem-alloc-exp" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-g" />
-				</Compiler>
 			</Target>
-			<Target title="Release">
-				<Option output="bin/Dense Graph" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/" />
+			<Target title="Initialization">
+				<Option output="bin/init-exp" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-O2" />
-				</Compiler>
-				<Linker>
-					<Add option="-s" />
-				</Linker>
+			</Target>
+			<Target title="Initialization Test">
+				<Option output="bin/dense-graph" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+			</Target>
+			<Target title="Path Finder">
+				<Option output="bin/path-finder-exp" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+			</Target>
+			<Target title="Path Finder Minus Heuristic">
+				<Option output="bin/dense-graph" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj" />
+				<Option type="1" />
+				<Option compiler="gcc" />
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-O3" />
 			<Add option="-Wall" />
+			<Add option="--verbose" />
+			<Add directory="include" />
+			<Add directory="$(#boost.include)" />
 		</Compiler>
-		<Unit filename="src/main-mem-alloc.cpp" />
+		<Unit filename="include/func.hpp" />
+		<Unit filename="include/graph.hpp">
+			<Option target="Memory Allocation Test" />
+			<Option target="Initialization" />
+			<Option target="Path Finder" />
+			<Option target="Path Finder Minus Heuristic" />
+		</Unit>
+		<Unit filename="src/func.cpp" />
+		<Unit filename="src/main-init.cpp">
+			<Option target="Initialization" />
+		</Unit>
+		<Unit filename="src/main-mem-alloc.cpp">
+			<Option target="Memory Allocation Test" />
+		</Unit>
+		<Unit filename="src/main-path-finder-minus-heuristic.cpp" />
+		<Unit filename="src/main-path-finder.cpp">
+			<Option target="Path Finder" />
+		</Unit>
+		<Unit filename="test/test-main-init.cpp">
+			<Option target="Initialization Test" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<debugger />

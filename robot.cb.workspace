@@ -3,7 +3,7 @@
 	<Workspace title="Awesome Robot">
 		<Project filename="tools/ts-sim/ts-sim.cbp" />
 		<Project filename="tools/path-sim/path-sim.cbp" />
-		<Project filename="exp/dijkstra/Dijkstra.cbp" />
-		<Project filename="exp/dense-graph/dense-graph.cbp" active="1" />
+		<Project filename="exp/dijkstra/Dijkstra.cbp" active="1" />
+		<Project filename="exp/dense-graph/dense-graph.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

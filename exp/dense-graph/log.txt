@@ -1,0 +1,123 @@
+Edge Array Size: 2304000.
+Edge Array Byte Size: 18432000 bytes.
+CHECKPOINT: 127
+CHECKPOINT: 131
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/func.cpp
+Execution Time for "fillEdges": 0.06 s
+
+CHECKPOINT: 134
+CHECKPOINT: 161
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for filling locations: 0.01 s
+
+CHECKPOINT: 174
+CHECKPOINT: 180
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for filling weightmap - THETA LOOP: 0.73 s
+
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for filling weightmap - THETA LOOP: 0.77 s
+
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for filling weightmap - THETA LOOP: 0.83 s
+
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for filling weightmap: 2.33 s
+
+CHECKPOINT: 206
+CHECKPOINT: 211
+Start vertex: 31395
+Goal vertex: 132397
+CH ECKPOINT: 219
+CHECKPOINT: 239
+CHECKPOINT: 245
+Shortest path from 31395 to 132397: 31395 -> 31396 -> 31397 -> 31398 -> 31399 -> 31400 -> 31401 -> 31402 -> 31403 -> 31404 -> 31405 -> 31406 -> 31407 -> 31408 -> 31409 -> 31410 -> 31411 -> 31412 -> 31413 -> 31414 -> 31415 -> 31416 -> 31417 -> 31418 -> 31419 -> 31420 -> 31340 -> 31341 -> 31261 -> 31262 -> 31182 -> 31183 -> 31103 -> 31104 -> 31024 -> 31025 -> 30945 -> 30946 -> 30866 -> 30867 -> 30787 -> 30788 -> 30708 -> 30709 -> 30629 -> 30630 -> 30550 -> 30551 -> 30471 -> 30472 -> 30392 -> 30393 -> 30313 -> 30314 -> 30234 -> 30235 -> 30155 -> 30075 -> 30076 -> 30077 -> 29997 -> 36397 -> 42797 -> 49197 -> 55597 -> 61997 -> 68397 -> 74797 -> 81197 -> 87597 -> 93997 -> 100397 -> 106797 -> 113197 -> 119597 -> 125997 -> 132397
+Total travel time: 76
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for A* search: 0.33 s
+
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for "main": 3.25 s
+
+Edge Array Size: 2304000.
+Edge Array Byte Size: 18432000 bytes.
+CHECKPOINT: 127
+CHECKPOINT: 131
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/func.cpp
+Execution Time for "fillEdges": 0.06 s
+
+CHECKPOINT: 134
+CHECKPOINT: 161
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for filling locations: 0.01 s
+
+CHECKPOINT: 174
+CHECKPOINT: 180
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for filling weightmap - THETA LOOP: 0.74 s
+
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for filling weightmap - THETA LOOP: 0.77 s
+
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for filling weightmap - THETA LOOP: 0.86 s
+
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for filling weightmap: 2.37 s
+
+CHECKPOINT: 206
+CHECKPOINT: 211
+Start vertex: 149712
+Goal vertex: 110743
+CH ECKPOINT: 219
+CHECKPOINT: 239
+CHECKPOINT: 245
+Shortest path from 149712 to 110743: 149712 -> 149711 -> 149710 -> 149709 -> 149629 -> 149628 -> 149548 -> 149547 -> 149467 -> 149466 -> 149386 -> 149385 -> 149305 -> 149304 -> 149224 -> 149223 -> 149143 -> 142743 -> 136343 -> 129943 -> 123543 -> 117143 -> 110743
+Total travel time: 22
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for A* search: 0.13 s
+
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for "main": 3.09 s
+
+Edge Array Size: 2304000.
+Edge Array Byte Size: 18432000 bytes.
+CHECKPOINT: 127
+CHECKPOINT: 131
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/func.cpp
+Execution Time for "fillEdges": 0.06 s
+
+CHECKPOINT: 134
+CHECKPOINT: 161
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for filling locations: 0.01 s
+
+CHECKPOINT: 174
+CHECKPOINT: 180
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for filling weightmap - THETA LOOP: 0.73 s
+
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for filling weightmap - THETA LOOP: 0.76 s
+
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for filling weightmap - THETA LOOP: 0.83 s
+
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for filling weightmap: 2.32 s
+
+CHECKPOINT: 206
+CHECKPOINT: 211
+Start vertex: 268425
+Goal vertex: 522299
+CH ECKPOINT: 219
+CHECKPOINT: 239
+CHECKPOINT: 245
+Shortest path from 268425 to 522299: 268425 -> 268426 -> 268427 -> 268428 -> 268429 -> 268430 -> 268431 -> 268432 -> 268433 -> 268353 -> 268354 -> 268274 -> 268275 -> 268195 -> 268196 -> 268116 -> 268117 -> 268037 -> 268038 -> 267958 -> 267959 -> 267879 -> 267880 -> 267800 -> 267801 -> 267721 -> 267722 -> 267642 -> 267643 -> 267563 -> 267564 -> 267484 -> 267485 -> 267405 -> 267406 -> 267326 -> 267327 -> 267247 -> 267248 -> 267168 -> 267169 -> 267089 -> 267090 -> 267010 -> 267011 -> 266931 -> 266932 -> 266852 -> 266853 -> 266773 -> 266774 -> 266694 -> 266695 -> 266615 -> 266616 -> 266536 -> 266537 -> 266457 -> 266458 -> 266378 -> 266379 -> 266299 -> 272699 -> 279099 -> 285499 -> 291899 -> 298299 -> 304699 -> 311099 -> 317499 -> 323899 -> 330299 -> 336699 -> 343099 -> 349499 -> 355899 -> 362299 -> 368699 -> 375099 -> 381499 -> 387899 -> 394299 -> 400699 -> 407099 -> 413499 -> 419899 -> 426299 -> 432699 -> 439099 -> 445499 -> 451899 -> 458299 -> 464699 -> 471099 -> 477499 -> 483899 -> 490299 -> 496699 -> 503099 -> 509499 -> 515899 -> 522299
+Total travel time: 101
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for A* search: 1.56 s
+
+In file: /home/josh/prg/cc/robot/exp/dense-graph/src/main-path-finder.cpp
+Execution Time for "main": 4.51 s
+

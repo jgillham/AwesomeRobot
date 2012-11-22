@@ -1,0 +1,9 @@
+#ifndef INCLUDED_GRAPH
+#define INCLUDED_GRAPH
+
+#define GRAPH_THETA 120//160
+#define GRAPH_WIDTH 80//192
+#define GRAPH_HEIGHT 80//192
+
+#endif // INCLUDED_GRAPH
+
