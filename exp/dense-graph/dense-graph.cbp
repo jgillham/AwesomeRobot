@@ -38,7 +38,7 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-O3" />
+			<Add option="-Wfatal-errors" />
 			<Add option="-Wall" />
 			<Add option="--verbose" />
 			<Add directory="include" />
@@ -58,7 +58,12 @@
 		<Unit filename="src/main-mem-alloc.cpp">
 			<Option target="Memory Allocation Test" />
 		</Unit>
-		<Unit filename="src/main-path-finder-minus-heuristic.cpp" />
+		<Unit filename="src/main-path-finder-minus-heuristic.cpp">
+			<Option target="Memory Allocation Test" />
+			<Option target="Initialization" />
+			<Option target="Initialization Test" />
+			<Option target="Path Finder Minus Heuristic" />
+		</Unit>
 		<Unit filename="src/main-path-finder.cpp">
 			<Option target="Path Finder" />
 		</Unit>

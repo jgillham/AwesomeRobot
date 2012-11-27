@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="Awesome Robot">
-		<Project filename="tools/ts-sim/ts-sim.cbp" />
+		<Project filename="tools/ts-sim/ts-sim.cbp" active="1" />
 		<Project filename="tools/path-sim/path-sim.cbp" />
-		<Project filename="exp/dijkstra/Dijkstra.cbp" active="1" />
+		<Project filename="exp/dijkstra/Dijkstra.cbp" />
 		<Project filename="exp/dense-graph/dense-graph.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

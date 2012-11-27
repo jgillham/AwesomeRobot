@@ -21,6 +21,12 @@
 #include <fstream>
 #include <math.h>    // for sqrt
 
+#include <boost/progress.hpp>
+#include "graph.hpp"
+#include "func.hpp"
+#include <cassert>
+
+
 using namespace boost;
 using namespace std;
 
@@ -31,41 +37,8 @@ struct location {
 };
 typedef float cost;
 
-template <class Name, class LocMap>
-            class city_writer {
-public:
-        city_writer(Name n, LocMap l, float _minx, float _maxx,
-                    float _miny, float _maxy,
-                    unsigned int _ptx, unsigned int _pty)
-: name(n), loc(l), minx(_minx), maxx(_maxx), miny(_miny),
-        maxy(_maxy), ptx(_ptx), pty(_pty) {}
-        template <class Vertex>
-        void operator()(ostream& out, const Vertex& v) const {
-            float px = 1 - (loc[v].x - minx) / (maxx - minx);
-            float py = (loc[v].y - miny) / (maxy - miny);
-            out << "[label=\"" << name[v] << "\", pos=\""
-            << static_cast<unsigned int>(ptx * px) << ","
-            << static_cast<unsigned int>(pty * py)
-            << "\", fontsize=\"11\"]";
-        }
-private:
-        Name name;
-        LocMap loc;
-        float minx, maxx, miny, maxy;
-        unsigned int ptx, pty;
-    };
 
-template <class WeightMap>
-class time_writer {
-public:
-time_writer(WeightMap w) : wm(w) {}
-    template <class Edge>
-    void operator()(ostream &out, const Edge& e) const {
-        out << "[label=\"" << wm[e] << "\", fontsize=\"11\"]";
-    }
-private:
-    WeightMap wm;
-};
+
 
 
 // euclidean distance heuristic
@@ -102,23 +75,24 @@ private:
     Vertex m_goal;
 };
 
-#include <boost/progress.hpp>
-#include "graph.hpp"
-#include "func.hpp"
-#include <cassert>
+// specify some types
+typedef adjacency_list<listS, vecS, undirectedS, no_property,
+  property<edge_weight_t, cost> > mygraph_t;
+typedef property_map<mygraph_t, edge_weight_t>::type WeightMap;
+typedef mygraph_t::vertex_descriptor myVertex;
+typedef mygraph_t::edge_descriptor edge_descriptor;
+typedef mygraph_t::vertex_iterator vertex_iterator;
+typedef std::pair<int, int> edge;
+
+
+
+void AStarSearch( mygraph_t g, mt19937 gen, location* locations, ostream &out );
 
 
 int main(int argc, char **argv) {
     boost::progress_timer timerMain;
 
-    // specify some types
-    typedef adjacency_list<listS, vecS, undirectedS, no_property,
-    property<edge_weight_t, cost> > mygraph_t;
-    typedef property_map<mygraph_t, edge_weight_t>::type WeightMap;
-    typedef mygraph_t::vertex_descriptor vertex;
-    typedef mygraph_t::edge_descriptor edge_descriptor;
-    typedef mygraph_t::vertex_iterator vertex_iterator;
-    typedef std::pair<int, int> edge;
+
 
     Large arraySize = GRAPH_THETA * GRAPH_HEIGHT * GRAPH_WIDTH * 3;
     std::cout << "Edge Array Size: " << arraySize << "." << std::endl;
@@ -206,8 +180,23 @@ int main(int argc, char **argv) {
     cout << "CHECKPOINT: " << __LINE__ << std::endl;
     // pick random start/goal
     mt19937 gen(time(0));
-    vertex start = random_vertex(g, gen);
-    vertex goal = random_vertex(g, gen);
+    ofstream dotfile;
+    dotfile.open("tests.csv");
+    #define MAX_TESTS 100
+    for( int i = 0; i < MAX_TESTS; ++i ) {
+      AStarSearch( g, gen, locations, dotfile );
+    }
+
+    std::cout << "In file: " << __FILE__ << std::endl;
+    std::cout << "Execution Time for \"" << __FUNCTION__ << "\": ";
+    return 0;
+
+}
+#include <boost/timer.hpp>
+void AStarSearch( mygraph_t g, mt19937 , location* locations, ostream &out ) {
+    mt19937 gen(time(0));
+    myVertex start = random_vertex(g, gen);
+    myVertex goal = random_vertex(g, gen);
     cout << "CHECKPOINT: " << __LINE__ << std::endl;
 
     cout << "Start vertex: " << start << endl;
@@ -219,7 +208,8 @@ int main(int argc, char **argv) {
     cout << "CH ECKPOINT: " << __LINE__ << std::endl;
     bool found = false;
     {
-        boost::progress_timer timerAStar;
+        boost::progress_timer timerAStar();
+        boost::timer timerAStar2;
         try {
 
             // call astar named parameter interface
@@ -228,16 +218,16 @@ int main(int argc, char **argv) {
              distance_heuristic<mygraph_t, cost, location*>
              (locations, goal),
              predecessor_map(&p[0]).distance_map(&d[0]).
-             visitor(astar_goal_visitor<vertex>(goal)));
+             visitor(astar_goal_visitor<myVertex>(goal)));
             cout << "CHECKPOINT: " << __LINE__ << std::endl;
 
 
 
         } catch (found_goal fg) { // found a path to the goal
             found = true;
-            list<vertex> shortest_path;
+            list<myVertex> shortest_path;
             cout << "CHECKPOINT: " << __LINE__ << std::endl;
-            for (vertex v = goal;; v = p[v]) {
+            for (myVertex v = goal;; v = p[v]) {
                 shortest_path.push_front(v);
                 if (p[v] == v)
                     break;
@@ -245,21 +235,20 @@ int main(int argc, char **argv) {
             cout << "CHECKPOINT: " << __LINE__ << std::endl;
             cout << "Shortest path from " << start << " to "
             << goal << ": ";
-            list<vertex>::iterator spi = shortest_path.begin();
+            list<myVertex>::iterator spi = shortest_path.begin();
             cout << start;
             for (++spi; spi != shortest_path.end(); ++spi)
                 cout << " -> " << *spi;
             cout << endl << "Total travel time: " << d[goal] << endl;
         }
+        //double temp = timerAStar2.elapsed();
+        out << d[goal] << "," << (double)( timerAStar2.elapsed() );
         std::cout << "In file: " << __FILE__ << std::endl;
         std::cout << "Execution Time for A* search: ";
     }
+    out << std::endl;
     if ( !found ) {
         cout << "Didn't find a path from " << start << "to"
           << goal << "!" << endl;
     }
-    std::cout << "In file: " << __FILE__ << std::endl;
-    std::cout << "Execution Time for \"" << __FUNCTION__ << "\": ";
-    return 0;
-
 }
