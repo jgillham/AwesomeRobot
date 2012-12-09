@@ -4,7 +4,10 @@
 #define ROBOT_MAP_WIDTH 30
 #define ROBOT_MAP_HEIGHT 60
 
-Robot::Robot( State* state, int x, int y ): state( state ), x( x ), y( y ), mapTheta( 0 ) {
+Robot::Robot( State* state, int x, int y ):
+    state( state ), x( x ), y( y ), mapTheta( 0 ),
+    counter( 0 ), deltaX( 0 ), deltaY( 0 ), endCounter( -1 ) {
+  state->onBegin( this );
 }
 
 void Robot::draw( MapDrawer* mapDrawer ) {
@@ -48,10 +51,32 @@ void Robot::draw( MapDrawer* mapDrawer ) {
   //mapDrawer->drawLine( x, y + ROBOT_MAP_HEIGHT, x + ROBOT_MAP_WIDTH, y + ROBOT_MAP_HEIGHT );
   //mapDrawer->drawLine( x + ROBOT_MAP_WIDTH, y, x + ROBOT_MAP_WIDTH, y + ROBOT_MAP_HEIGHT );
 
-  mapDrawer->drawLine( 200+cornerTL_x, 200+cornerTL_y, 200+cornerTR_x, 200+cornerTR_y );
-  mapDrawer->drawLine( 200+cornerTL_x, 200+cornerTL_y, 200+cornerBL_x, 200+cornerBL_y );
-  mapDrawer->drawLine( 200+cornerBL_x, 200+cornerBL_y, 200+cornerBR_x, 200+cornerBR_y );
-  mapDrawer->drawLine( 200+cornerBR_x, 200+cornerBR_y, 200+cornerTR_x, 200+cornerTR_y );
+  mapDrawer->drawLine( this->x+cornerTL_x, this->y+cornerTL_y, this->x+cornerTR_x, this->y+cornerTR_y );
+  mapDrawer->drawLine( this->x+cornerTL_x, this->y+cornerTL_y, this->x+cornerBL_x, this->y+cornerBL_y );
+  mapDrawer->drawLine( this->x+cornerBL_x, this->y+cornerBL_y, this->x+cornerBR_x, this->y+cornerBR_y );
+  mapDrawer->drawLine( this->x+cornerBR_x, this->y+cornerBR_y, this->x+cornerTR_x, this->y+cornerTR_y );
 
-  mapDrawer->drawLine( 200, 200, 200+frontX, 200+frontY );
+  mapDrawer->drawLine( this->x, this->y, this->x+frontX, this->y+frontY );
+}
+#define THETA_RATE 0.5
+#define MOVE_RATE 0.5
+#define X_RATE 0.5
+#define Y_RATE 0.5
+void Robot::changePosition( double theta, double x, double y ) {
+  this->deltaX = X_RATE;
+  this->deltaY = Y_RATE;
+  this->endCounter = this->counter + abs( x - this->x ) / this->deltaX;
+}
+void Robot::update() {
+  this->x += this->deltaX;
+  this->y += this->deltaY;
+  this->mapTheta += this->deltaTheta;
+  if ( this->endCounter > -1 &&
+      this->counter > this->endCounter ) {
+    this->deltaX = 0;
+    this->deltaY = 0;
+    this->deltaTheta = 0;
+    this->endCounter = -1;
+  }
+  ++this->counter;
 }

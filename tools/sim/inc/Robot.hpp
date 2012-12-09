@@ -2,17 +2,24 @@
 #define ROBOT_CLASS_INCLUDED
 #include "MapDrawer.hpp"
 #include "State.hpp"
+#include "FirstMate.hpp"
 /**
  * The robot class handles drawing the robot.
  */
-class Robot {
+class Robot : public FirstMate {
   private:
-    int x, y;
+    double x, y;
     double mapTheta;
     State* state;
+    int counter;
+
+    double deltaX, deltaY, deltaTheta;
+    int endCounter;
   public:
     Robot( State* state, int x, int y );
     void draw( MapDrawer* mapDrawer );
+    void changePosition( double theta, double x, double y );
+    void update();
 };
 
 #endif // ROBOT_CLASS_INCLUDED
