@@ -33,8 +33,10 @@
 			<Add option="-Wall" />
 			<Add directory="inc" />
 		</Compiler>
+		<Unit filename="inc/FirstMate.hpp" />
 		<Unit filename="inc/GoState.hpp" />
 		<Unit filename="inc/State.hpp" />
+		<Unit filename="inc/Waypoint.hpp" />
 		<Unit filename="src/GoState.cpp" />
 		<Extensions>
 			<code_completion />

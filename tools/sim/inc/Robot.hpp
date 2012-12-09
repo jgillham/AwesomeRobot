@@ -18,7 +18,9 @@ class Robot : public FirstMate {
   public:
     Robot( State* state, int x, int y );
     void draw( MapDrawer* mapDrawer );
-    void changePosition( double theta, double x, double y );
+    void turn( double theta );
+    void move( double x, double y );
+    double calculateTheta( double x, double y );
     void update();
 };
 
