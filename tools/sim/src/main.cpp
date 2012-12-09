@@ -3,7 +3,10 @@
 
 //SDL libraries:
 #include <SDL.h>
+#include "SDL_gfxPrimitives.h"
 
+#include "Map.hpp"
+#include "Robot.hpp"
 
 //global constants:
 const int SCREEN_W = 915;
@@ -17,9 +20,10 @@ int main(int argc, char **argv) {
     SDL_WM_SetCaption( WINDOW_TITLE, 0 );
     SDL_Event event;
     bool gameRunning = true; //lets us exit the game loop
+    Robot* robot = new Robot( 0, 0, 0 );
+    MapDrawer* drawer = new MapDrawer( screen );
 
     while (gameRunning) { //the game loop
-        //------------------------  (a) USER INPUT---------------------------------
         //event checker:
         if (SDL_PollEvent(&event)) { //SDL_PollEvent will return 1 if the targeted event has occured
             //quit if we made event an SDL_QUIT event.
@@ -30,6 +34,7 @@ int main(int argc, char **argv) {
 
         //clear surfaces background:
         SDL_FillRect(screen, NULL, 0x0);
+        robot->draw( drawer );
 
         SDL_Flip(screen);
     }

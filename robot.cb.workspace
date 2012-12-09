@@ -6,5 +6,6 @@
 		<Project filename="exp/dijkstra/Dijkstra.cbp" />
 		<Project filename="exp/dense-graph/dense-graph.cbp" />
 		<Project filename="tools/sim/robot-sim.cbp" active="1" />
+		<Project filename="UpperDeck.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

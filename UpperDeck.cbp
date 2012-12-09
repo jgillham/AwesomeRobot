@@ -2,22 +2,21 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Robot Simulator" />
+		<Option title="Upper Deck" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/Robot Simulator" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/Upper Deck" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="--verbose" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/Robot Simulator" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/Upper Deck" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -31,19 +30,8 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="`pkg-config --cflags SDL_gfx`" />
-			<Add directory="inc" />
-			<Add directory="../../inc" />
 		</Compiler>
-		<Linker>
-			<Add option="`pkg-config --libs SDL_gfx`" />
-		</Linker>
-		<Unit filename="inc/Map.hpp" />
-		<Unit filename="inc/MapDrawer.hpp" />
-		<Unit filename="inc/Robot.hpp" />
-		<Unit filename="src/MapDrawer.cpp" />
-		<Unit filename="src/Robot.cpp" />
-		<Unit filename="src/main.cpp" />
+		<Unit filename="inc/State.hpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
