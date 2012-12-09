@@ -25,3 +25,6 @@ README.html
 .obj/
 .objs/
 objs/
+
+# Code::Blocks backup files.
+*.backup
