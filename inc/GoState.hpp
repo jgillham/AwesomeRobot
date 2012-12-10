@@ -8,12 +8,13 @@ class GoState : public State {
     double theta, x, y;
     std::vector< Waypoint* >* path;
 
-    void goToNextPoint( FirstMate* firstMate );
+    bool goToNextPoint( FirstMate* firstMate );
 
   public:
     GoState( std::vector< Waypoint* >* path );
     void onBegin( FirstMate* firstMate );
     void onMove( FirstMate* firstMate );
+    void onTurn( FirstMate* firstMate );
     void onEnd();
 
 };

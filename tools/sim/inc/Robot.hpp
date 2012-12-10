@@ -15,13 +15,17 @@ class Robot : public FirstMate {
 
     double deltaX, deltaY, deltaTheta;
     int endCounter;
+
+    double calculateTheta( double x, double y );
   public:
     Robot( State* state, int x, int y );
     void draw( MapDrawer* mapDrawer );
-    void turn( double theta );
-    void move( double x, double y );
-    double calculateTheta( double x, double y );
     void update();
+    // First mate implemetation:
+    void turn( Waypoint& next );
+    void move( Waypoint& next );
+    bool needToTurn( Waypoint& next );
+    bool needToMove( Waypoint& next );
 };
 
 #endif // ROBOT_CLASS_INCLUDED

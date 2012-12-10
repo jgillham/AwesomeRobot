@@ -69,10 +69,6 @@ void drawWaypoints( MapDrawer* mapDrawer, std::vector< Waypoint* >* path, double
   double hWidth = 10;
   double hHeight = 10;
 
-  double frontLegth = hHeight * 1.5;
-  double frontX = frontLegth * sin( nodeAnimationTheta );
-  double frontY = frontLegth * -cos( nodeAnimationTheta );
-
 
   double radius = sqrt( hWidth * hWidth + hHeight * hHeight );
 
