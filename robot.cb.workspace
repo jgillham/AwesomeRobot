@@ -5,7 +5,9 @@
 		<Project filename="tools/path-sim/path-sim.cbp" />
 		<Project filename="exp/dijkstra/Dijkstra.cbp" />
 		<Project filename="exp/dense-graph/dense-graph.cbp" />
-		<Project filename="tools/sim/robot-sim.cbp" active="1" />
+		<Project filename="tools/sim/robot-sim.cbp" active="1">
+			<Depends filename="UpperDeck.cbp" />
+		</Project>
 		<Project filename="UpperDeck.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
