@@ -19,5 +19,7 @@ class FirstMate  {
     virtual bool needToTurn( Waypoint& next ) = 0;
     /** Checks to see if a move is needed. */
     virtual bool needToMove( Waypoint& next ) = 0;
+    /** Tells the first mate to change the state. */
+    virtual void signalEndState() = 0;
 };
 #endif // FIRSTMATE_CLASS_INCLUDED
