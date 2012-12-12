@@ -37,6 +37,7 @@
 		<Unit filename="inc/GoState.hpp" />
 		<Unit filename="inc/State.hpp" />
 		<Unit filename="inc/Waypoint.hpp" />
+		<Unit filename="inc/matha.h" />
 		<Unit filename="src/GoState.cpp" />
 		<Extensions>
 			<code_completion />

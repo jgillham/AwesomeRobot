@@ -1,14 +1,14 @@
 #include <math.h>
 
+#include <iostream>
+#include <stdlib.h>
 #include "Robot.hpp"
-#define ROBOT_MAP_WIDTH 30
-#define ROBOT_MAP_HEIGHT 60
+  // Custom
+#include "matha.h"
 
-#define MOVE_RATE 0.5
-#define SIGN( X ) ((X < 0) ? -1 : 1)
-#define MIN( A, B ) ( A < B ? A : B )
-#define THETA_TOLORANCE 1
-#define ABS( X ) ( X < 0 ? -X : X )
+
+
+
 
 Robot::Robot( State* state, int x, int y ):
     state( state ), x( x ), y( y ), mapTheta( 0 ),
@@ -51,7 +51,7 @@ void Robot::draw( MapDrawer* mapDrawer ) {
 
   mapDrawer->drawLine( this->x, this->y, this->x+frontX, this->y+frontY );
 }
-#include <iostream>
+
 bool inTurn = false;
 void Robot::update() {
   //std::cout << "update: this->deltaY" << this->deltaY << std::endl;
@@ -77,31 +77,42 @@ void Robot::update() {
   }
   ++this->counter;
 }
-#define PI 3.14
-#define MOD( A, B ) ( A > B ? A - B * (int)(A / B) : A )
-double Robot::calculateTheta( double x, double y ) {
-  double totalX = x - this->x;
-  double totalY = this->y - y;
+
+double Robot::calculateTheta( double startX, double startY, double endX, double endY ) {
+  double totalX = endX - startX;
+  double totalY = startY - endY;
+  std::cout << "totalX" << totalX << std::endl;
+  std::cout << "totalY" << totalY << std::endl;
   return atan2( totalY, totalX ) -PI/2;
 }
 
+double Robot::calculateTheta( double x, double y ) {
+  return this->calculateTheta( this->x, this->y, x, y );
+}
+
+bool Robot::needToTurn( double x, double y, double heading, Waypoint& next, double tolerance ) {
+  double needTheta = Robot::calculateTheta( x, y, next.x, next.y ) - heading;
+  if ( tolerance < ABS( needTheta ) )
+    return true;
+  return false;
+}
 // FirstMate methods:
 bool Robot::needToTurn( Waypoint& next ) {
-  double needTheta = this->calculateTheta( next.x, next.y ) - this->mapTheta;
-  if ( THETA_TOLORANCE < ABS( needTheta ) )
+  return this->needToTurn( this->x, this->y, this->mapTheta, next, THETA_TOLORANCE );
+}
+
+bool Robot::needToMove( double x, double y, Waypoint& next, double tolerance ) {
+  if ( tolerance < ABS( x - next.x ) )
+    return true;
+  if ( tolerance < ABS( y - next.y ) )
     return true;
   return false;
 }
 
-#define POSITION_TOLERANCE 1
 bool Robot::needToMove( Waypoint& next ) {
-  if ( POSITION_TOLERANCE < ABS( this->x - next.x ) )
-    return true;
-  if ( POSITION_TOLERANCE < ABS( this->y - next.y ) )
-    return true;
-  return false;
+  return this->needToMove( this->x, this->y, next, POSITION_TOLERANCE );
 }
-#define TURN_RATE 0.01
+
 
 void Robot::turn( Waypoint& next ) {
   //return;
@@ -151,3 +162,6 @@ void Robot::move( Waypoint& next ) {
   inTurn = false;
 }
 
+void Robot::signalEndState() {
+  // Get ready to chang states.
+}
