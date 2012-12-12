@@ -23,11 +23,12 @@ GoState::GoState( std::vector< Waypoint* >* path ):
  */
 void GoState::onBegin( FirstMate* firstMate ) {
   if ( !this->path->empty() ) {
-    Waypoint& next = *this->path->back();
+    //Waypoint& next = *this->path->back();
     //this->onTurn( firstMate );
-    firstMate->turn( next );
+    //firstMate->turn( next );
     //firstMate->move( next );
   }
+  this->goToNextPoint( firstMate );
 }
 
 /**
