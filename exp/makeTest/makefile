@@ -155,10 +155,10 @@ all: applet_files build sizeafter
 
 build: elf hex 
 
-$(TARGET).pde:$(TARGET).ino
+build/$(TARGET).pde:$(TARGET).ino
 	cat $< > $@
 
-applet_files: $(TARGET).pde
+applet_files: build/$(TARGET).pde
 	# Here is the "preprocessing".
 	# It creates a .cpp file based with the same name as the .pde file.
 	# On top of the new .cpp file comes the WProgram.h header.
@@ -168,7 +168,7 @@ applet_files: $(TARGET).pde
 	# Not the original .pde file you actually edit...
 	test -d applet || mkdir applet
 	echo '#include "WProgram.h"' > applet/$(TARGET).cpp
-	cat $(TARGET).pde >> applet/$(TARGET).cpp
+	cat build/$(TARGET).pde >> applet/$(TARGET).cpp
 	cat $(ARDUINO)/main.cpp >> applet/$(TARGET).cpp
 
 elf: applet/$(TARGET).elf
@@ -227,7 +227,7 @@ extcoff: $(TARGET).elf
 	$(NM) -n $< > $@
 
 	# Link: create ELF output file from library.
-applet/$(TARGET).elf: $(TARGET).pde applet/core.a 
+applet/$(TARGET).elf: build/$(TARGET).pde applet/core.a 
 	$(CXX) $(ALL_CXXFLAGS) -o $@ applet/$(TARGET).cpp -L. applet/core.a $(LDFLAGS)
 
 applet/core.a: $(OBJ)
