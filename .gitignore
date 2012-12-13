@@ -28,3 +28,6 @@ objs/
 
 # Code::Blocks backup files.
 *.backup
+build/
+applet/
+*.pde
