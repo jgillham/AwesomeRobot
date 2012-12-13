@@ -65,7 +65,8 @@ $(ARDUINO)/WInterrupts.c
 CORE_CXXSRC = $(wildcard $(ARDUINO)/*.cpp )
 #$(ARDUINO)/HardwareSerial.cpp $(ARDUINO)/WMath.cpp \
 $(ARDUINO)/Print.cpp
-SRC=$(wildcard src/*.cpp) $(wildcard src/*.c) $(wildcard src/*.cxx)
+INO_SRC=$(wildcard src/*.ino)
+SRC=$(INO_SRC:src/%.ino=applet/%.cpp) $(wildcard src/*.cpp) $(wildcard src/*.c) $(wildcard src/*.cxx)
 FORMAT = ihex
 #
 # Set up values according to what the IDE uses:
@@ -140,7 +141,7 @@ MV = mv -f
 # Define all object files.
 CORE_OBJS = $(CORE_SRCS:/%.c=build/%.o) $(CORE_CXXSRC:/%.cpp=build/%.o) $(ASRC:/%.S=build/%.o)
 
-SRC_OBJS = $(SRC:src/%.c=obj/%.o)  $(SRC:src/%.cpp=obj/%.c) $(SRC:src/%.cxx=obj/%.o)
+SRC_OBJS = $(SRC:applet/%.cpp=obj/%.o) $(SRC:src/%.c=obj/%.o)  $(SRC:src/%.cpp=obj/%.c) $(SRC:src/%.cxx=obj/%.o)
 
 # Define all listing files.
 LST = $(ASRC:/%.S=build/%.lst) $(CORE_CXXSRC:/%.cpp=build/%.lst) $(CORE_SRCS:/%.c=build/%.lst)
@@ -174,7 +175,8 @@ dirs:
 build/$(TARGET).pde: src/$(TARGET).ino
 	cat $< > $@
 
-applet_files: applet/$(TARGET).cpp
+applet_files: $(SRC)
+#applet/$(TARGET).cpp
 
 applet/$(TARGET).cpp: build/$(TARGET).pde
 	# Here is the "preprocessing".
@@ -247,8 +249,8 @@ extcoff: applet/$(TARGET).elf
 	$(NM) -n $< > $@
 
 	# Link: create ELF output file from library.
-applet/$(TARGET).elf: applet/$(TARGET).cpp $(SRC) applet/core.a 
-	$(CXX) $(ALL_CXXFLAGS) -o $@ applet/$(TARGET).cpp $(SRC) -L. applet/core.a $(LDFLAGS)
+applet/$(TARGET).elf: $(SRC) applet/core.a 
+	$(CXX) $(ALL_CXXFLAGS) -o $@ $(SRC) -L. applet/core.a $(LDFLAGS)
 
 applet/core.a: $(CORE_OBJS)
 	@for i in $(CORE_OBJS); do echo $(AR) rcs applet/core.a $$i; $(AR) rcs applet/core.a $$i; done
