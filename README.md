@@ -21,5 +21,7 @@ Library Prerequisits:
 , 
 <a href="http://www.libsdl.org">SDL</a>
 , 
-<a href="sourceforge.net/projects/sdlgfx">SDL_GFX</a>
+<a href="http://www.sourceforge.net/projects/sdlgfx">SDL_GFX</a>
+,
+<a href="https://github.com/arduino/Arduino">Arduino Source</a>
 <br><br>
