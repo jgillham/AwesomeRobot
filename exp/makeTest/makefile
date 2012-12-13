@@ -62,11 +62,13 @@ CORE_SRCS = $(wildcard $(ARDUINO)/*.c )
 $(ARDUINO)/wiring_analog.c $(ARDUINO)/wiring_digital.c \
 $(ARDUINO)/wiring_pulse.c $(ARDUINO)/wiring_shift.c \
 $(ARDUINO)/WInterrupts.c
-CORE_CXXSRC = $(wildcard $(ARDUINO)/*.cpp )
+VIRTUAL_PURE=applet/virtualPure.cpp
+CORE_CXXSRC=$(wildcard $(ARDUINO)/*.cpp)
 #$(ARDUINO)/HardwareSerial.cpp $(ARDUINO)/WMath.cpp \
 $(ARDUINO)/Print.cpp
+
 INO_SRC=$(wildcard src/*.ino)
-SRC=$(INO_SRC:src/%.ino=applet/%.cpp) $(wildcard src/*.cpp) $(wildcard src/*.c) $(wildcard src/*.cxx)
+SRC=$(INO_SRC:src/%.ino=applet/%.cpp) $(wildcard src/*.cpp) $(wildcard src/*.c) $(wildcard src/*.cxx) 
 FORMAT = ihex
 #
 # Set up values according to what the IDE uses:
@@ -139,9 +141,9 @@ REMOVE = rm -f
 MV = mv -f
 
 # Define all object files.
-CORE_OBJS = $(CORE_SRCS:/%.c=build/%.o) $(CORE_CXXSRC:/%.cpp=build/%.o) $(ASRC:/%.S=build/%.o)
+CORE_OBJS = $(CORE_SRCS:/%.c=build/%.o) $(CORE_CXXSRC:/%.cpp=build/%.o) $(ASRC:/%.S=build/%.o) $(VIRTUAL_PURE:applet/%.cpp=build/%.o)
 
-SRC_OBJS = $(SRC:applet/%.cpp=obj/%.o) $(SRC:src/%.c=obj/%.o)  $(SRC:src/%.cpp=obj/%.c) $(SRC:src/%.cxx=obj/%.o)
+SRC_OBJS = $(SRC:src/%.c=obj/%.o)  $(SRC:src/%.cpp=obj/%.c) $(SRC:src/%.cxx=obj/%.o)
 
 # Define all listing files.
 LST = $(ASRC:/%.S=build/%.lst) $(CORE_CXXSRC:/%.cpp=build/%.lst) $(CORE_SRCS:/%.c=build/%.lst)
@@ -177,6 +179,9 @@ build/$(TARGET).pde: src/$(TARGET).ino
 
 applet_files: $(SRC)
 #applet/$(TARGET).cpp
+$(VIRTUAL_PURE):
+	mkdir -p applet
+	echo "extern \"C\" void __cxa_pure_virtual() { while (1) ; }" > $@
 
 applet/$(TARGET).cpp: build/$(TARGET).pde
 	# Here is the "preprocessing".
@@ -189,7 +194,6 @@ applet/$(TARGET).cpp: build/$(TARGET).pde
 	test -d applet || mkdir applet
 	echo '#include "WProgram.h"' > applet/$(TARGET).cpp
 	# Required:
-	echo "extern \"C\" void __cxa_pure_virtual() { while (1) ; }" >> applet/$(TARGET).cpp
 	cat build/$(TARGET).pde >> applet/$(TARGET).cpp
 	cat $(ARDUINO)/main.cpp >> applet/$(TARGET).cpp
 
@@ -259,6 +263,10 @@ applet/core.a: $(CORE_OBJS)
 
 # Compile: create object files from C++ source files.
 build/%.o: /%.cpp
+	mkdir -p $(dir $@)
+	$(CXX) -c $(ALL_CXXFLAGS) $< -o $@ 
+
+build/%.o : applet/%.cpp
 	mkdir -p $(dir $@)
 	$(CXX) -c $(ALL_CXXFLAGS) $< -o $@ 
 
