@@ -14,7 +14,7 @@ connected = False
 
 ## open the serial port that your ardiono 
 ## is connected to.
-ser = serial.Serial("COM6", 115200)
+ser = serial.Serial("/dev/ttyACM0", 115200)
 
 ## loop until the arduino tells us it is ready
 while not connected:

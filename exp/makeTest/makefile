@@ -40,7 +40,7 @@
 
 TARGET = $(notdir $(CURDIR))
 #INSTALL_DIR = ../../..
-PORT = /dev/ttyUSB*
+PORT = /dev/ttyACM0
 #UPLOAD_RATE = 57600
 AVRDUDE_PROGRAMMER = arduino
 #stk500v1

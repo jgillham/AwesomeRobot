@@ -2,7 +2,7 @@ extern "C" void __cxa_pure_virtual() { while (1) ; }
 int IRpin = 0;                                    // analog pin for reading the IR sensor
 
 void setup() {
-//  Serial.begin(115200);                             // start the serial port
+  Serial.begin(115200);                             // start the serial port
 }
 void loop() {
   float volts = analogRead(IRpin)*0.0048828125;   // value from sensor * (5/1024) - if running 3.3.volts then change 5 to 3.3
