@@ -151,9 +151,14 @@ ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 
 
 # Default target.
-all: applet_files build sizeafter
+all: dirs applet_files build sizeafter
 
-build: elf hex 
+build: dirs elf hex 
+
+dirs:
+	mkdir -p build 
+	mkdir -p obj
+	mkdir -p applet
 
 build/$(TARGET).pde: src/$(TARGET).ino
 	cat $< > $@
@@ -260,9 +265,11 @@ build/%.s: /%.c
 
 # Automatic dependencies
 build/%.d: /%.c
+	mkdir -p $(shell dirname $@)
 	$(CC) -M $(ALL_CFLAGS) $< | sed "s;$(notdir $*).o:;$*.o $*.d:;" > $@
 
 build/%.d: /%.cpp
+	mkdir -p $(shell dirname $@)
 	$(CXX) -M $(ALL_CXXFLAGS) $< | sed "s;$(notdir $*).o:;$*.o $*.d:;" > $@
 
 
