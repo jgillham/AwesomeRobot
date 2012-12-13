@@ -57,15 +57,15 @@ MODEL=uno
 ARDUINO =$(ARDUINO_BASE)/hardware/arduino/cores/arduino
 #/home/shared/Downloads/Arduino-master/hardware/arduino/cores/arduino
 AVR_TOOLS_PATH = /usr/bin
-SRC = $(wildcard $(ARDUINO)/*.c )
+CORE_SRCS = $(wildcard $(ARDUINO)/*.c )
 #$(ARDUINO)/pins_arduino.c $(ARDUINO)/wiring.c \
 $(ARDUINO)/wiring_analog.c $(ARDUINO)/wiring_digital.c \
 $(ARDUINO)/wiring_pulse.c $(ARDUINO)/wiring_shift.c \
 $(ARDUINO)/WInterrupts.c
-CXXSRC = $(wildcard $(ARDUINO)/*.cpp )
+CORE_CXXSRC = $(wildcard $(ARDUINO)/*.cpp )
 #$(ARDUINO)/HardwareSerial.cpp $(ARDUINO)/WMath.cpp \
 $(ARDUINO)/Print.cpp
-SRC2=$(wildcard *.ino)
+SRC=$(wildcard *.ino)
 FORMAT = ihex
 #
 # Set up values according to what the IDE uses:
@@ -138,10 +138,10 @@ REMOVE = rm -f
 MV = mv -f
 
 # Define all object files.
-OBJ = $(SRC:/%.c=build/%.o) $(CXXSRC:/%.cpp=build/%.o) $(ASRC:/%.S=build/%.o)
+CORE_OBJS = $(CORE_SRCS:/%.c=build/%.o) $(CORE_CXXSRC:/%.cpp=build/%.o) $(ASRC:/%.S=build/%.o)
 
 # Define all listing files.
-LST = $(ASRC:/%.S=build/%.lst) $(CXXSRC:/%.cpp=build/%.lst) $(SRC:/%.c=build/%.lst)
+LST = $(ASRC:/%.S=build/%.lst) $(CORE_CXXSRC:/%.cpp=build/%.lst) $(CORE_SRCS:/%.c=build/%.lst)
 
 # Combine all necessary flags and optional flags.
 # Add target processor to flags.
@@ -155,10 +155,12 @@ all: applet_files build sizeafter
 
 build: elf hex 
 
-build/$(TARGET).pde:$(TARGET).ino
+build/$(TARGET).pde: src/$(TARGET).ino
 	cat $< > $@
 
-applet_files: build/$(TARGET).pde
+applet_files: applet/$(TARGET).cpp
+
+applet/$(TARGET).cpp: build/$(TARGET).pde
 	# Here is the "preprocessing".
 	# It creates a .cpp file based with the same name as the .pde file.
 	# On top of the new .cpp file comes the WProgram.h header.
@@ -227,11 +229,11 @@ extcoff: $(TARGET).elf
 	$(NM) -n $< > $@
 
 	# Link: create ELF output file from library.
-applet/$(TARGET).elf: build/$(TARGET).pde applet/core.a 
+applet/$(TARGET).elf: applet/$(TARGET).cpp applet/core.a 
 	$(CXX) $(ALL_CXXFLAGS) -o $@ applet/$(TARGET).cpp -L. applet/core.a $(LDFLAGS)
 
-applet/core.a: $(OBJ)
-	@for i in $(OBJ); do echo $(AR) rcs applet/core.a $$i; $(AR) rcs applet/core.a $$i; done
+applet/core.a: $(CORE_OBJS)
+	@for i in $(CORE_OBJS); do echo $(AR) rcs applet/core.a $$i; $(AR) rcs applet/core.a $$i; done
 
 
 
@@ -266,11 +268,12 @@ build/%.d: /%.cpp
 
 # Target: clean project.
 clean:
-	$(REMOVE) applet/$(TARGET).hex applet/$(TARGET).eep applet/$(TARGET).cof applet/$(TARGET).elf \
+	rm -Rf applet obj build
+#	$(REMOVE) applet/$(TARGET).hex applet/$(TARGET).eep applet/$(TARGET).cof applet/$(TARGET).elf \
 	applet/$(TARGET).map applet/$(TARGET).sym applet/$(TARGET).lss applet/core.a \
-	$(OBJ) $(OBJ) $(LST) $(SRC:%.c=build%.s) $(SRC:%.c=build%.d) $(CXXSRC:%.cpp=build%.s) $(CXXSRC:%.cpp=build%.d)
+	$(CORE_OBJS) $(LST) $(CORE_SRCS:%.c=build%.s) $(CORE_SRCS:%.c=build%.d) $(CORE_CXXSRC:%.cpp=build%.s) $(CORE_CXXSRC:%.cpp=build%.d)
 
 .PHONY:	all build elf hex eep lss sym program coff extcoff clean applet_files sizebefore sizeafter
 
--include $(SRC:/%.c=build/%.d)
--include $(CXXSRC:/%.cpp=build/%.d)
+-include $(CORE_SRCS:/%.c=build/%.d)
+-include $(CORE_CXXSRC:/%.cpp=build/%.d)
