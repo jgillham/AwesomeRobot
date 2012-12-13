@@ -41,24 +41,38 @@
 TARGET = $(notdir $(CURDIR))
 #INSTALL_DIR = ../../..
 PORT = /dev/ttyUSB*
-UPLOAD_RATE = 57600
-AVRDUDE_PROGRAMMER = stk500v1
-MCU = atmega168
-F_CPU = 16000000
+#UPLOAD_RATE = 57600
+AVRDUDE_PROGRAMMER = arduino
+#stk500v1
+#MCU = atmega168
+#F_CPU = 16000000
+ARDUINO_BASE=/usr/share/arduino
+BOARDFILE=../../res/boards.txt
+MODEL=uno
+
 
 ############################################################################
 # Below here nothing should be changed...
 
-ARDUINO = /usr/share/arduino/hardware/arduino/cores/arduino
+ARDUINO =$(ARDUINO_BASE)/hardware/arduino/cores/arduino
+#/home/shared/Downloads/Arduino-master/hardware/arduino/cores/arduino
 AVR_TOOLS_PATH = /usr/bin
-SRC = $(ARDUINO)/pins_arduino.c $(ARDUINO)/wiring.c \
+SRC = $(wildcard $(ARDUINO)/*.c )
+#$(ARDUINO)/pins_arduino.c $(ARDUINO)/wiring.c \
 $(ARDUINO)/wiring_analog.c $(ARDUINO)/wiring_digital.c \
 $(ARDUINO)/wiring_pulse.c $(ARDUINO)/wiring_shift.c \
 $(ARDUINO)/WInterrupts.c
-CXXSRC = $(ARDUINO)/HardwareSerial.cpp $(ARDUINO)/WMath.cpp \
+CXXSRC = $(wildcard $(ARDUINO)/*.cpp )
+#$(ARDUINO)/HardwareSerial.cpp $(ARDUINO)/WMath.cpp \
 $(ARDUINO)/Print.cpp
 SRC2=$(wildcard *.ino)
 FORMAT = ihex
+#
+# Set up values according to what the IDE uses:
+#
+UPLOAD_RATE= $(shell grep "^$(MODEL)\." $(BOARDFILE) | grep upload.speed | sed 's/.*=//')
+MCU = $(shell grep "^$(MODEL)\." $(BOARDFILE) | grep build.mcu | sed 's/.*=//')
+F_CPU = $(shell grep "^$(MODEL)\." $(BOARDFILE) | grep build.f_cpu | sed 's/.*=//')
 
 
 # Name of this Makefile (used for "make depend").
@@ -76,8 +90,10 @@ CDEFS = -DF_CPU=$(F_CPU)
 CXXDEFS = -DF_CPU=$(F_CPU)
 
 # Place -I options here
-CINCS = -I$(ARDUINO)
+CINCS = -I$(ARDUINO) 
+#-I/home/shared/Downloads/Arduino-master/hardware/arduino/variants/mega/
 CXXINCS = -I$(ARDUINO)
+#-I/home/shared/Downloads/Arduino-master/hardware/arduino/variants/mega/
 
 # Compiler flag to set the C Standard level.
 # c89   - "ANSI" C
@@ -110,7 +126,8 @@ AVRDUDE_FLAGS = -V -F \
 
 # Program settings
 CC = $(AVR_TOOLS_PATH)/avr-gcc
-CXX = $(AVR_TOOLS_PATH)/avr-g++
+CXX = $(AVR_TOOLS_PATH)/avr-gcc
+#++
 OBJCOPY = $(AVR_TOOLS_PATH)/avr-objcopy
 OBJDUMP = $(AVR_TOOLS_PATH)/avr-objdump
 AR  = $(AVR_TOOLS_PATH)/avr-ar
@@ -152,7 +169,7 @@ applet_files: $(TARGET).pde
 	test -d applet || mkdir applet
 	echo '#include "WProgram.h"' > applet/$(TARGET).cpp
 	cat $(TARGET).pde >> applet/$(TARGET).cpp
-	cat $(ARDUINO)/main.cxx >> applet/$(TARGET).cpp
+	cat $(ARDUINO)/main.cpp >> applet/$(TARGET).cpp
 
 elf: applet/$(TARGET).elf
 hex: applet/$(TARGET).hex

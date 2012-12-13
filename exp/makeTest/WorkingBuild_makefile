@@ -81,7 +81,7 @@ else
 endif
 
 # Where do you keep the official Arduino software package?
-ARDUINO_DIR = /usr/share/arduino
+ARDUINO_DIR = /home/shared/Downloads/Arduino-master
 HOME_LIB = $(HOME)/sketchbook/libraries
 
 # path to ATTiny files look at http://hlt.media.mit.edu/?p=1695
