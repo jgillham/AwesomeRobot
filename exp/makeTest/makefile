@@ -90,6 +90,11 @@ CWARN = -Wall -Wstrict-prototypes
 CTUNING = -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
 #CEXTRA = -Wa,-adhlns=$(<:.c=.lst)
 
+# Extra flags to match what the Arduino 1.0 IDE is doing:
+# Something about the -ffunction-sections -fdata-sections reduces
+# final text size by roughly half!
+CEXTRA= -g -Os -Wall -fno-exceptions -ffunction-sections -fdata-sections -DARDUINO=100
+
 CFLAGS = $(CDEBUG) $(CDEFS) $(CINCS) -O$(OPT) $(CWARN) $(CSTANDARD) $(CEXTRA)
 CXXFLAGS = $(CDEFS) $(CINCS) -O$(OPT)
 #ASFLAGS = -Wa,-adhlns=$(<:.S=.lst),-gstabs 
@@ -116,11 +121,10 @@ REMOVE = rm -f
 MV = mv -f
 
 # Define all object files.
-OBJ = $(SRC:%.c=build%.o) $(CXXSRC:%.cpp=build%.o) $(ASRC:%.S=build%.o)
-OBJ2=$(SRC2:%.ino=build%.o)
+OBJ = $(SRC:/%.c=build/%.o) $(CXXSRC:/%.cpp=build/%.o) $(ASRC:/%.S=build/%.o)
 
 # Define all listing files.
-LST = $(ASRC:%.S=build%.lst) $(CXXSRC:%.cpp=build%.lst) $(SRC:%.c=build%.lst)
+LST = $(ASRC:/%.S=build/%.lst) $(CXXSRC:/%.cpp=build/%.lst) $(SRC:/%.c=build/%.lst)
 
 # Combine all necessary flags and optional flags.
 # Add target processor to flags.
@@ -133,6 +137,9 @@ ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 all: applet_files build sizeafter
 
 build: elf hex 
+
+$(TARGET).pde:$(TARGET).ino
+	cat $< > $@
 
 applet_files: $(TARGET).pde
 	# Here is the "preprocessing".
@@ -216,11 +223,6 @@ build/%.o: /%.cpp
 	mkdir -p $(dir $@)
 	$(CXX) -c $(ALL_CXXFLAGS) $< -o $@ 
 
-# Compile my code.
-%.o: %.ino
-	mkdir -p $(dir $@)
-	$(CXX) -c $(ALL_CXXFLAGS) $< -o $@ 
-
 # Compile: create object files from C source files.
 build/%.o: /%.c
 	mkdir -p $(dir $@)
@@ -228,7 +230,7 @@ build/%.o: /%.c
 
 
 # Compile: create assembler files from C source files.
-build%.s: %.c
+build/%.s: /%.c
 	$(CC) -S $(ALL_CFLAGS) $< -o $@
 
 
@@ -238,10 +240,10 @@ build%.s: %.c
 
 
 # Automatic dependencies
-build%.d: %.c
+build/%.d: /%.c
 	$(CC) -M $(ALL_CFLAGS) $< | sed "s;$(notdir $*).o:;$*.o $*.d:;" > $@
 
-build%.d: %.cpp
+build/%.d: /%.cpp
 	$(CXX) -M $(ALL_CXXFLAGS) $< | sed "s;$(notdir $*).o:;$*.o $*.d:;" > $@
 
 
@@ -253,5 +255,5 @@ clean:
 
 .PHONY:	all build elf hex eep lss sym program coff extcoff clean applet_files sizebefore sizeafter
 
--include $(SRC:%.c=build%.d)
--include $(CXXSRC:%.cpp=build%.d)
+-include $(SRC:/%.c=build/%.d)
+-include $(CXXSRC:/%.cpp=build/%.d)
