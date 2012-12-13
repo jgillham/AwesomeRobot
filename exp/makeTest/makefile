@@ -65,7 +65,7 @@ $(ARDUINO)/WInterrupts.c
 CORE_CXXSRC = $(wildcard $(ARDUINO)/*.cpp )
 #$(ARDUINO)/HardwareSerial.cpp $(ARDUINO)/WMath.cpp \
 $(ARDUINO)/Print.cpp
-SRC=$(wildcard *.ino)
+SRC=$(wildcard src/*.cpp) $(wildcard src/*.c) $(wildcard src/*.cxx)
 FORMAT = ihex
 #
 # Set up values according to what the IDE uses:
@@ -90,9 +90,9 @@ CDEFS = -DF_CPU=$(F_CPU)
 CXXDEFS = -DF_CPU=$(F_CPU)
 
 # Place -I options here
-CINCS = -I$(ARDUINO) 
+CINCS = -I$(ARDUINO) -Iinc
 #-I/home/shared/Downloads/Arduino-master/hardware/arduino/variants/mega/
-CXXINCS = -I$(ARDUINO)
+CXXINCS = -I$(ARDUINO) -Iinc
 #-I/home/shared/Downloads/Arduino-master/hardware/arduino/variants/mega/
 
 # Compiler flag to set the C Standard level.
@@ -140,6 +140,8 @@ MV = mv -f
 # Define all object files.
 CORE_OBJS = $(CORE_SRCS:/%.c=build/%.o) $(CORE_CXXSRC:/%.cpp=build/%.o) $(ASRC:/%.S=build/%.o)
 
+SRC_OBJS = $(SRC:src/%.c=obj/%.o)  $(SRC:src/%.cpp=obj/%.c) $(SRC:src/%.cxx=obj/%.o)
+
 # Define all listing files.
 LST = $(ASRC:/%.S=build/%.lst) $(CORE_CXXSRC:/%.cpp=build/%.lst) $(CORE_SRCS:/%.c=build/%.lst)
 
@@ -152,6 +154,15 @@ ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 
 # Default target.
 all: dirs applet_files build sizeafter
+
+# Code Blocks targets:
+Release: all
+
+Debug: all
+
+cleanDebug: clean
+
+cleanRelease: clean
 
 build: dirs elf hex 
 
@@ -175,6 +186,8 @@ applet/$(TARGET).cpp: build/$(TARGET).pde
 	# Not the original .pde file you actually edit...
 	test -d applet || mkdir applet
 	echo '#include "WProgram.h"' > applet/$(TARGET).cpp
+	# Required:
+	echo "extern \"C\" void __cxa_pure_virtual() { while (1) ; }" >> applet/$(TARGET).cpp
 	cat build/$(TARGET).pde >> applet/$(TARGET).cpp
 	cat $(ARDUINO)/main.cpp >> applet/$(TARGET).cpp
 
@@ -212,7 +225,7 @@ coff: applet/$(TARGET).elf
 	$(COFFCONVERT) -O coff-avr applet/$(TARGET).elf $(TARGET).cof
 
 
-extcoff: $(TARGET).elf
+extcoff: applet/$(TARGET).elf
 	$(COFFCONVERT) -O coff-ext-avr applet/$(TARGET).elf $(TARGET).cof
 
 
@@ -234,8 +247,8 @@ extcoff: $(TARGET).elf
 	$(NM) -n $< > $@
 
 	# Link: create ELF output file from library.
-applet/$(TARGET).elf: applet/$(TARGET).cpp applet/core.a 
-	$(CXX) $(ALL_CXXFLAGS) -o $@ applet/$(TARGET).cpp -L. applet/core.a $(LDFLAGS)
+applet/$(TARGET).elf: applet/$(TARGET).cpp $(SRC) applet/core.a 
+	$(CXX) $(ALL_CXXFLAGS) -o $@ applet/$(TARGET).cpp $(SRC) -L. applet/core.a $(LDFLAGS)
 
 applet/core.a: $(CORE_OBJS)
 	@for i in $(CORE_OBJS); do echo $(AR) rcs applet/core.a $$i; $(AR) rcs applet/core.a $$i; done
@@ -257,6 +270,17 @@ build/%.o: /%.c
 build/%.s: /%.c
 	$(CC) -S $(ALL_CFLAGS) $< -o $@
 
+obj/%.o : src/%.c
+	mkdir -p $(dir $@)
+	$(CC) -c $(ALL_CFLAGS) $< -o $@ 
+
+obj/%.o : src/%.cpp
+	mkdir -p $(dir $@)
+	$(CXX) -c $(ALL_CXXFLAGS) $< -o $@ 
+
+obj/%.o : src/%.cxx
+	mkdir -p $(dir $@)
+	$(CXX) -c $(ALL_CXXFLAGS) $< -o $@ 
 
 # Assemble: create object files from assembler source files.
 .S.o:
