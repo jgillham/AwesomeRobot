@@ -30,7 +30,7 @@ using namespace LibSerial;
  * @returns 0 if the operation was successful.
  */
 int main() {
-  char pcMessage[] = "I am your leader!";
+  char pcMessage[] = "I love you!";
   int pcMsgIndex = 0;
     // Allocate on the stack.
   SerialStream stream;
