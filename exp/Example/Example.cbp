@@ -2,14 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Arduino Handshake" />
-		<Option makefile="makefile" />
-		<Option makefile_is_custom="1" />
+		<Option title="Example" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/Arduino Serial Response And Feedback Experiment" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/Example" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -18,7 +16,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/Arduino Serial Response And Feedback Experiment" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/Example" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -33,8 +31,10 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="inc/settings.h" />
-		<Unit filename="src/serialRF.cpp" />
+		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="main.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />

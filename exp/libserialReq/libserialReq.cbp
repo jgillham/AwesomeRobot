@@ -30,7 +30,15 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add directory="inc" />
+			<Add directory="ard/inc" />
 		</Compiler>
+		<Linker>
+			<Add option="`pkg-config --libs libserial`" />
+		</Linker>
+		<Unit filename="ard/inc/settings.h" />
+		<Unit filename="inc/main_private.hpp" />
+		<Unit filename="src/pc_main.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

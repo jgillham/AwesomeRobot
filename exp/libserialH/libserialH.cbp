@@ -30,11 +30,14 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add directory="ard/inc" />
+			<Add directory="inc" />
 		</Compiler>
 		<Linker>
 			<Add option="`pkg-config --libs libserial`" />
 		</Linker>
-		<Unit filename="src/main.cpp" />
+		<Unit filename="inc/main_private.hpp" />
+		<Unit filename="src/pc_main.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

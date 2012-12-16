@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="Experiment">
+		<Project filename="Example/Example.cbp" />
+		<Project filename="libserialReq/libserialReq.cbp" />
+		<Project filename="libserialReq/ard/libserialReqArd.cbp" />
+		<Project filename="libserialH/libserialH.cbp" />
+		<Project filename="libserialH/ard/serialHArd.cbp" />
+		<Project filename="Polymorphism/Polymorphism.cbp" />
+		<Project filename="dijkstra/Dijkstra.cbp" />
+		<Project filename="dense-graph/dense-graph.cbp" />
+		<Project filename="makeTest/makeTest.cbp" active="1" />
+	</Workspace>
+</CodeBlocks_workspace_file>
