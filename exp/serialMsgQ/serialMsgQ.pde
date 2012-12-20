@@ -6,29 +6,34 @@
  * @author Josh Gillham
  * @version 12-19-12
  */
- 
+
 #include "StringBuilder.h"
 #include "support.h"
 #include "settings.h"
 
-StringBuilder serialInBox;
-
+/**
+ * Sets up the port and establishes contact.
+ */
 void setup() {
    Serial.begin( PORT_SPEED );
    establishContact();
 }
 
+/**
+ * Catches all the input and calls readBytes() to
+ *  respond to the input.
+ */
 void loop() {
   if ( Serial.available() > 0 ) {
     int numOfBytes = Serial.available();
 
     char buffer[numOfBytes];
-    
+
     // First grab all the bytes.
     for( int i = 0; i < numOfBytes; ++i ) {
       buffer[ i ] = Serial.read();
     }
-    
+
     // Now handle each byte.
     readBytes( buffer, numOfBytes );
   }
