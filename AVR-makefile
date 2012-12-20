@@ -37,18 +37,19 @@
 #     upload your program to the Arduino board.
 #
 # $Id$
-include settings.mk
 ############################################################################
 # Below here nothing should be changed...
 
 ARDUINO =$(ARDUINO_BASE)/hardware/arduino/cores/arduino
-AVR_TOOLS_PATH = /usr/bin
 CORE_SRCS = $(wildcard $(ARDUINO)/*.c )
 VIRTUAL_PURE=applet/virtualPure.cpp
 CORE_CXXSRC=$(wildcard $(ARDUINO)/*.cpp)
 
-INO_SRC=$(wildcard src/*.ino)
-SRC=$(INO_SRC:src/%.ino=applet/%.cpp) $(wildcard src/*.cpp) $(wildcard src/*.c) $(wildcard src/*.cxx) 
+INO_SRC=$(wildcard src/*.ino) $(wildcard src/*.pde) \
+	$(wildcard *.ino) $(wildcard *.pde)
+SRC= $(wildcard src/*.cpp) $(wildcard src/*.c) $(wildcard src/*.cxx) \
+     $(wildcard *.cpp) $(wildcard *.c) $(wildcard *.cxx) \
+     $(INO_SRC:%.pde=applet/%.cpp)
 FORMAT = ihex
 #
 # Set up values according to what the IDE uses:
@@ -73,8 +74,8 @@ CDEFS = -DF_CPU=$(F_CPU)
 CXXDEFS = -DF_CPU=$(F_CPU)
 
 # Place -I options here
-CINCS = -I$(ARDUINO) -Iinc
-CXXINCS = -I$(ARDUINO) -Iinc
+CINCS = -I$(ARDUINO) -Iinc -I$(ARDUINO_BASE)/hardware/arduino/variants/mega
+CXXINCS = -I$(ARDUINO) -Iinc -I$(ARDUINO_BASE)/hardware/arduino/variants/mega
 
 # Compiler flag to set the C Standard level.
 # c89   - "ANSI" C
@@ -116,12 +117,13 @@ REMOVE = rm -f
 MV = mv -f
 
 # Define all object files.
-CORE_OBJS = $(CORE_SRCS:/%.c=build/%.o) $(CORE_CXXSRC:/%.cpp=build/%.o) $(ASRC:/%.S=build/%.o) $(VIRTUAL_PURE:applet/%.cpp=build/%.o)
+CORE_OBJS = $(CORE_SRCS:/%.c=obj/%.o) $(CORE_CXXSRC:/%.cpp=obj/%.o) $(ASRC:/%.S=obj/%.o) $(VIRTUAL_PURE:applet/%.cpp=obj/%.o)
 
-SRC_OBJS = $(SRC:src/%.c=obj/%.o)  $(SRC:src/%.cpp=obj/%.c) $(SRC:src/%.cxx=obj/%.o)
+SRC_OBJS = $(SRC:src/%.c=obj/%.o)  $(SRC:src/%.cpp=obj/%.c) $(SRC:src/%.cxx=obj/%.o) \
+           $(SRC:%.c=obj/%.o)  $(SRC:%.cpp=obj/%.c) $(SRC:%.cxx=obj/%.o)
 
 # Define all listing files.
-LST = $(ASRC:/%.S=build/%.lst) $(CORE_CXXSRC:/%.cpp=build/%.lst) $(CORE_SRCS:/%.c=build/%.lst)
+LST = $(ASRC:/%.S=obj/%.lst) $(CORE_CXXSRC:/%.cpp=obj/%.lst) $(CORE_SRCS:/%.c=obj/%.lst)
 
 # Combine all necessary flags and optional flags.
 # Add target processor to flags.
@@ -133,8 +135,9 @@ ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 # Default target.
 all: dirs applet_files build sizeafter
 
+
 # Code Blocks targets:
-Release: all
+Release: upload
 
 Debug: all
 
@@ -149,15 +152,17 @@ dirs:
 	mkdir -p obj
 	mkdir -p applet
 
-build/$(TARGET).pde: src/$(TARGET).ino
-	cat $< > $@
+
+#obj/$(TARGET).pde: src/$(TARGET).ino
+#	cat $< > $@
 
 applet_files: $(SRC)
+
 $(VIRTUAL_PURE):
 	mkdir -p applet
 	echo "extern \"C\" void __cxa_pure_virtual() { while (1) ; }" > $@
 
-applet/$(TARGET).cpp: build/$(TARGET).pde
+applet/$(TARGET).cpp: $(TARGET).pde
 	# Here is the "preprocessing".
 	# It creates a .cpp file based with the same name as the .pde file.
 	# On top of the new .cpp file comes the WProgram.h header.
@@ -166,10 +171,10 @@ applet/$(TARGET).cpp: build/$(TARGET).pde
 	# refer to this new, automatically generated, file. 
 	# Not the original .pde file you actually edit...
 	test -d applet || mkdir applet
-	echo '#include "WProgram.h"' > applet/$(TARGET).cpp
+	echo '#include <WProgram.h>' > $@
 	# Required:
-	cat build/$(TARGET).pde >> applet/$(TARGET).cpp
-	cat $(ARDUINO)/main.cpp >> applet/$(TARGET).cpp
+	cat $< >> $@
+	cat $(ARDUINO)/main.cpp >> $@
 
 elf: applet/$(TARGET).elf
 hex: applet/$(TARGET).hex
@@ -236,22 +241,22 @@ applet/core.a: $(CORE_OBJS)
 
 
 # Compile: create object files from C++ source files.
-build/%.o: /%.cpp
+obj/%.o: /%.cpp
 	mkdir -p $(dir $@)
 	$(CXX) -c $(ALL_CXXFLAGS) $< -o $@ 
 
-build/%.o : applet/%.cpp
+obj/%.o : applet/%.cpp
 	mkdir -p $(dir $@)
 	$(CXX) -c $(ALL_CXXFLAGS) $< -o $@ 
 
 # Compile: create object files from C source files.
-build/%.o: /%.c
+obj/%.o: /%.c
 	mkdir -p $(dir $@)
 	$(CC) -c $(ALL_CFLAGS) $< -o $@ 
 
 
 # Compile: create assembler files from C source files.
-build/%.s: /%.c
+obj/%.s: /%.c
 	$(CC) -S $(ALL_CFLAGS) $< -o $@
 
 obj/%.o : src/%.c
@@ -272,11 +277,11 @@ obj/%.o : src/%.cxx
 
 
 # Automatic dependencies
-build/%.d: /%.c
+obj/%.d: /%.c
 	mkdir -p $(shell dirname $@)
 	$(CC) -M $(ALL_CFLAGS) $< | sed "s;$(notdir $*).o:;$*.o $*.d:;" > $@
 
-build/%.d: /%.cpp
+obj/%.d: /%.cpp
 	mkdir -p $(shell dirname $@)
 	$(CXX) -M $(ALL_CXXFLAGS) $< | sed "s;$(notdir $*).o:;$*.o $*.d:;" > $@
 
@@ -287,5 +292,5 @@ clean:
 
 .PHONY:	all build elf hex eep lss sym program coff extcoff clean applet_files sizebefore sizeafter
 
--include $(CORE_SRCS:/%.c=build/%.d)
--include $(CORE_CXXSRC:/%.cpp=build/%.d)
+-include $(CORE_SRCS:/%.c=obj/%.d)
+-include $(CORE_CXXSRC:/%.cpp=obj/%.d)
