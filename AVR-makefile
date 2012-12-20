@@ -50,6 +50,8 @@ INO_SRC=$(wildcard src/*.ino) $(wildcard src/*.pde) \
 SRC= $(wildcard src/*.cpp) $(wildcard src/*.c) $(wildcard src/*.cxx) \
      $(wildcard *.cpp) $(wildcard *.c) $(wildcard *.cxx) \
      $(INO_SRC:%.pde=applet/%.cpp)
+HEADERS=$(wildcard src/*.h) $(wildcard src/*.hpp) $(wildcard src/*.hxx) \
+	$(wildcard *.h) $(wildcard *.hpp) $(wildcard *.hxx)
 FORMAT = ihex
 #
 # Set up values according to what the IDE uses:
@@ -232,7 +234,7 @@ extcoff: applet/$(TARGET).elf
 	$(NM) -n $< > $@
 
 	# Link: create ELF output file from library.
-applet/$(TARGET).elf: $(SRC) applet/core.a 
+applet/$(TARGET).elf: $(SRC) applet/core.a  $(HEADERS)
 	$(CXX) $(ALL_CXXFLAGS) -o $@ $(SRC) -L. applet/core.a $(LDFLAGS)
 
 applet/core.a: $(CORE_OBJS)
@@ -270,6 +272,7 @@ obj/%.o : src/%.cpp
 obj/%.o : src/%.cxx
 	mkdir -p $(dir $@)
 	$(CXX) -c $(ALL_CXXFLAGS) $< -o $@ 
+
 
 # Assemble: create object files from assembler source files.
 .S.o:
