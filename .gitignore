@@ -31,4 +31,3 @@ objs/
 build/
 applet/
 *.pde
-*.cbtemp
