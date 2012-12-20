@@ -1,5 +1,5 @@
 """
-This program sends messages to the arduino using a FIFO scheme. Each message 
+This program sends messages to the arduino using a FIFO scheme. Each message
  has an unique id tag. The program sends the first item on the deque and waits
  for the confirmation.  When the program matches the ID tag, it removes the
  first message from the deque.
@@ -11,26 +11,39 @@ This program sends messages to the arduino using a FIFO scheme. Each message
 
 ## BEGIN Programmer settings. Please customize these according to your computer.
 
-				# Port description:
+                        # Port description:
 PORT = "/dev/ttyACM0"
-				# Message being sent through the port:
+                        # Message being sent through the port:
 MESSAGE = "I love you!"
-				# Maximum seconds to wait before the relationship fails.
+                        # Maximum seconds to wait before the relationship fails.
 SESSION_TIMEOUT = 40
-				# This speed must match the code on the arduino.
+                        # This speed must match the code on the arduino.
 SPEED = 115200
-				# Total messages to send.
+                        # Total messages to send.
 TOTAL_MESSAGES = 150
 
 ## END Programmer settings.
 
-			# Required communication library.
+                    # Required communication library.
 import serial
-			# Required to detect time out.
+                    # Required to detect time out.
 import time
-			# Required for deque.
+                    # Required for deque.
 import collections
 
+"""
+Makes a lambda function which returns true while their is time remaining.
+
+@param seconds is the number seconds to return true.
+
+@return a lambda function thats true while for number of seconds.
+Tests:
+>>>makeTimer( 1 )()
+True
+"""
+def makeTimer( seconds ):
+  startTime = time.time()
+  return lambda : time.time() - startTime < seconds
 
 # Load up the outBox with messages.
 outBox = collections.deque( )
@@ -41,24 +54,26 @@ while i < TOTAL_MESSAGES:
 
 # Start the timer now!
 startTime = time.time()
+sessionTimer = makeTimer( SESSION_TIMEOUT )
 
 # Open the port to the arduino.
 ser = serial.Serial( port = PORT, baudrate = SPEED)
 
-			# Necessary initial value.
+                    # Necessary initial value.
 byte = '+'
-			# What the PC sends and expects back.
+                    # What the PC sends and expects back.
 pcByte = 'H'
-			# Wait 100 ms seconds while reading
+                    # Wait 100 ms seconds while reading
 ser.timeout = 0.1
+
 
 # Make contact.
 # Keep talking and listening until the Arduino
 #  answers with the same byte.
-while byte != pcByte and (time.time() - startTime) < SESSION_TIMEOUT:
+while byte != pcByte and sessionTimer():
 	ser.write( pcByte )
 	print( "PC says: " + pcByte )
-	byte = ser.read() 
+	byte = ser.read()
 	print( "Arduino says: " + byte )
 print( "Made contact!" )
 connectedTime = time.time()
@@ -73,18 +88,18 @@ inMessage = ""
 badConfirmations = 0
 messagesSent = 0
 confirmationsReceived = 0
-tries = 1
+hasSentMessage = 0
 cu = 0
 
 # Send one message and receive the confirmation for each message.
-while len( outBox ) > 0 and (time.time() - startTime) < SESSION_TIMEOUT:
+while len( outBox ) > 0 and sessionTimer():
 	# Send a limited number of duplicate messages.
-	if cu < tries:
+	if hasSentMessage == 0:
 		print( "PC sends: " + outBox[0] )
 		ser.write( outBox[0] )
-		ser.flushOutput()
+		#ser.flushOutput()
 		messagesSent = messagesSent + 1
-		cu = cu + 1
+		hasSentMessage = 1
 	# Check for bytes in the read buffer.
 	while ser.inWaiting() > 0:
 		byte = ser.read()
@@ -100,7 +115,7 @@ while len( outBox ) > 0 and (time.time() - startTime) < SESSION_TIMEOUT:
 				if confirmationNumber == (outBox[0])[2:-1]:
 					outBox.popleft()
 					print( "Confirmation#" + confirmationNumber + " received." )
-					cu = 0
+					hasSentMessage = 0
 					confirmationsReceived = confirmationsReceived + 1
 				else:
 					badConfirmations = badConfirmations + 1
@@ -111,7 +126,7 @@ while len( outBox ) > 0 and (time.time() - startTime) < SESSION_TIMEOUT:
 			if foundMessage:
 				inMessage = inMessage + byte
 # Calculate times.
-totalTime = time.time() - startTime 
+totalTime = time.time() - startTime
 portConnectionTime = connectedTime - startTime
 messageRelayTime = totalTime - portConnectionTime
 # Print report.
@@ -122,4 +137,3 @@ print( "Total Time: " + str( totalTime ) )
 print( "Messages Sent: " + str( messagesSent ) )
 print( "Bad Confirmations: " + str( badConfirmations ) )
 print( "Confirmations Received: " + str( confirmationsReceived ) )
-
