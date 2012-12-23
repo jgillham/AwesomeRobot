@@ -11,7 +11,6 @@
 //for the distance of the object (or the background) depending on its
 //direction of sweep
 
-#DEFINE msDELAY 9
 
 #include <Servo.h> 
 int avgValue, storedAvg, oldValue, newValue, difference, scanDirection, count=0, countLimit=25, IRpin = 5, Spos=90, objectSpos, objectDistance, objectAngle; 
@@ -69,12 +68,12 @@ void ScanForEdge()
       scanDirection = 1;
     } 
     myservo.write(Spos);   
-    delay(msDELAY); //this delay is incredibly important
+    delay(9); //this delay is incredibly important
               //its the ms in  the equation above
     return;
 }
 
-void smoothObject
+void smoothObject()
 {
     objectAngleAvg= (3*objectAngleAvg + objectAngle)/4;
     objectDistanceAvg=(6*objectDistanceAvg+objectDistance)/7;
