@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Serial Msg Q 2.0" />
+		<Option makefile="makefile" />
+		<Option makefile_is_custom="1" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option type="4" />
+				<Option compiler="gcc" />
+			</Target>
+			<Target title="Release">
+				<Option type="4" />
+				<Option compiler="gcc" />
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="StringBuilder.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="makefile">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="msgQ.py">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="serialMsgQ2.pde">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="settings.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="settings.mk">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="support.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="support.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
