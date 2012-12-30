@@ -30,4 +30,4 @@ objs/
 *.backup
 build/
 applet/
-*.pde
+*.cbtemp
