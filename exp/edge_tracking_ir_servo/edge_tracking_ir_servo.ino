@@ -3,7 +3,7 @@
 // We learned from caibration that there is this relationship:
 //data blur (in degrees) = Shift
 //milliseconds delay = ms
-//Shift = -0.0054571*ms^3 + 0.27204*ms^2 - 4.7537*ms + 34.688
+//Shift = f(ms)
 //this is why you will see a moving avg of 10 and a ms delay of 9
 //the moving average tries to keep track of enough previous values
 //to that when it sees "Hey! I found an edge!" (when in fact it is pointing 10 degrees past it)
@@ -13,7 +13,7 @@
 
 
 #include <Servo.h> 
-int avgValue, storedAvg, oldValue, newValue, difference, scanDirection, count=0, countLimit=25, IRpin = 5, Spos=90, objectSpos, objectDistance, objectAngle; 
+int degs, avgValue, storedAvg, oldValue, newValue, difference, scanDirection, count=0, countLimit=25, IRpin = 5, Spos=90, objectSpos, objectDistance, objectAngle; 
 float volts, distance, objectAngleAvg, objectDistanceAvg;
 Servo myservo;
 
@@ -30,14 +30,15 @@ void loop()
 { 
     IR();
     ScanForEdge();
-    smoothObject();
+   // smoothObject();
+   // printData();
 }
 
 void IR()
 {
     volts = analogRead(IRpin)*0.0048828125;   // value from sensor
     distance = constrain(65*pow(volts, -1.10),0,200); //ignores distant values
-    avgValue = (9*avgValue+newValue)/10; // the 10 here is "shift" in the equation above
+    avgValue = (6*avgValue+distance)/7; // the  "shift" in the equation above
 }
 
 void ScanForEdge()
@@ -51,13 +52,19 @@ void ScanForEdge()
     else if (2 * distance < storedAvg)//hit an edge while turning clockwise
     {
       objectDistance=distance;
+      if (objectDistance<100)
+        {degs=3;}
+      else if (objectDistance<200)
+        {degs=2;}
+      else
+        {degs=1;}
       scanDirection=-1;
       storedAvg=avgValue;
       objectAngle=Spos;
     }
     else//hit no edge
     {
-      Spos += scanDirection;
+      Spos += degs * scanDirection;
     }
     if (Spos > 180)  //bounce off servo limits
     {
@@ -68,7 +75,7 @@ void ScanForEdge()
       scanDirection = 1;
     } 
     myservo.write(Spos);   
-    delay(9); //this delay is incredibly important
+    delay(13); //this delay is incredibly important
               //its the ms in  the equation above
     return;
 }
