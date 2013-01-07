@@ -3,42 +3,44 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="Upper Deck" />
+		<Option makefile_is_custom="1" />
+		<Option execution_dir="/home/personal/prg/cc/robot/src/ud" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="Python/;" />
 		<Build>
 			<Target title="Debug">
-				<Option output="lib/libuDeck_debug" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
-				<Option object_output="obj/Debug/" />
-				<Option type="2" />
+				<Option type="4" />
 				<Option compiler="gcc" />
+				<Option parameters="run" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
 			</Target>
-			<Target title="Release">
-				<Option output="lib/libuDeck" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Release/" />
-				<Option type="1" />
+			<Target title="TestAll">
+				<Option type="4" />
 				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-O2" />
-				</Compiler>
-				<Linker>
-					<Add option="-s" />
-				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add directory="inc" />
 		</Compiler>
-		<Unit filename="inc/FirstMate.hpp" />
-		<Unit filename="inc/GoState.hpp" />
-		<Unit filename="inc/State.hpp" />
-		<Unit filename="inc/Waypoint.hpp" />
-		<Unit filename="inc/matha.h" />
-		<Unit filename="src/ud/GoState.cpp" />
+		<Unit filename="src/ud/Utility.py">
+			<Option virtualFolder="Python/" />
+		</Unit>
+		<Unit filename="src/ud/sensors.py">
+			<Option virtualFolder="Python/" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="src/ud/settings.py">
+			<Option virtualFolder="Python/" />
+		</Unit>
+		<Unit filename="src/ud/states.py">
+			<Option virtualFolder="Python/" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="src/ud/support.py" />
 		<Extensions>
 			<code_completion />
 			<debugger />

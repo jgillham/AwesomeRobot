@@ -8,7 +8,7 @@
 		<Project filename="tools/sim/robot-sim.cbp">
 			<Depends filename="UpperDeck.cbp" />
 		</Project>
-		<Project filename="UpperDeck.cbp" />
-		<Project filename="LowerDeck.cbp" active="1" />
+		<Project filename="UpperDeck.cbp" active="1" />
+		<Project filename="LowerDeck.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
