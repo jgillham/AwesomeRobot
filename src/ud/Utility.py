@@ -31,14 +31,19 @@ class SerialPort:
         >>> import settings
     """
     import settings
-    """
-    Deconstructor. Called automatically with the "with" statement.
-    Example:
-        >>> try:
-        ...     with SerialPort() as instance:
-        ...         pass
-    """
+
     def __exit__( self, type, value, traceback ):
+        """
+        Deconstructor. Called automatically with the "with" statement.
+
+        Example:
+            >>> import serial
+            >>> try:
+            ...     with SerialPort() as t:
+            ...         pass
+            ... except serial.SerialException:
+            ...     raise NameError( "This example requires an arduino plugged in and the correct port address." )
+        """
         if not isinstance(value, TypeError):
             self.__ser.close()
 
@@ -56,9 +61,10 @@ class SerialPort:
             ... except serial.SerialException as e:
             ...     print e
             could not open port /dev/fooBar: [Errno 2] No such file or directory: '/dev/fooBar'
-            Try to open the port.
-            # The following needs the arduino plugged in and the correct port address.
-            >>> instanceOfSerialPort = SerialPort()
+            >>> try:
+            ...     with instanceOfSerialPort = SerialPort():
+            ... except serial.SerialException:
+            ...     raise NameError( "This example requires an arduino plugged in and the correct port address." )
         """
         import serial
         import settings
@@ -78,9 +84,13 @@ class SerialPort:
             True -- If contact was made sucessfully.
             False -- If contact failed.
 
-        Uses:
-            # The following needs the arduino plugged in and the correct port address.
-            >>> SerialPort().makeContact()
+        Examples:
+            >>> import serial
+            >>> try:
+            ...     with SerialPort() as instance:
+            ...         instance.makeContact()
+            ... except serial.SerialException:
+            ...     raise NameError( "This example requires an arduino plugged in and the correct port address." )
             True
         """
         sessionTimer = support.makeTimer( timeout )
@@ -92,4 +102,57 @@ class SerialPort:
             print( "PC says: " + pcByte )
             byte = ser.read()
             print( "Arduino says: " + byte )
+        # Clear extra input and output in the buffers.
+        ser.flushInput()
+        ser.flushOutput()
         return True
+
+    def readByteIfAvailiable( self ):
+        """
+        Reads a byte if there is one waiting in the buffer.
+
+        Returns:
+            The byte -- If one is availiable.
+            False -- If the buffer is empty.
+
+        Examples:
+            >>> import serial
+            >>> try:
+            ...     with SerialPort() as instance:
+            ...         instance.readByteIfAvailiable()
+            ... except serial.SerialException as e:
+            ...     raise NameError( "This example requires an arduino plugged in and the correct port address." )
+
+        """
+        if self.__ser.inWaiting() > 0:
+            return ser.read()
+        else:
+            return False
+
+    def close( self ):
+        """
+            Closes the serial port connection.
+
+            Examples:
+                >>> import serial
+                >>> try:
+                ...     connection = SerialPort()
+                ... except:
+                ...     raise NameError( "This example requires an arduino plugged in and the correct port address." )
+                ... else:
+                ...     connection.close()
+        """
+        self.__ser.close()
+
+    def write( self, serializable ):
+        """
+        Writes a object that can be converted to a string to the serial port.
+        Examples:
+            >>> import serial
+            >>> try:
+            ...     with SerialPort() as instance:
+            ...         instance.write( 'a' )
+            ... except serial.SerialException:
+            ...     raise NameError( "This example requires an arduino plugged in and the correct port address." )
+        """
+        self.__ser.write( str( serializable ) )
