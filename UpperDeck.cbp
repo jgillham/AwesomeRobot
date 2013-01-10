@@ -4,7 +4,6 @@
 	<Project>
 		<Option title="Upper Deck" />
 		<Option makefile_is_custom="1" />
-		<Option execution_dir="/home/personal/prg/cc/robot/src/ud" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Option virtualFolders="Python/;" />
@@ -40,7 +39,9 @@
 			<Option virtualFolder="Python/" />
 			<Option target="Debug" />
 		</Unit>
-		<Unit filename="src/ud/support.py" />
+		<Unit filename="src/ud/support.py">
+			<Option virtualFolder="Python/" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<debugger />

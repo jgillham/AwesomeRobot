@@ -19,7 +19,11 @@ class Messenger:
     Class Tests:
     >>> instance = Messenger()
     """
-    pass
+    def __init__( self ):
+        self.__responseHandler = 0
+    def setResponseHandler( self, stateObject ):
+        self.__responseHandler = stateObject
+
 
 class SerialPort:
     """
