@@ -74,6 +74,7 @@ OPT = s
 # Place -D or -U options here
 CDEFS = -DF_CPU=$(F_CPU)
 CXXDEFS = -DF_CPU=$(F_CPU)
+SRCCDEF+=
 
 # Place -I options here
 CINCS = -I$(ARDUINO) -Iinc -I$(ARDUINO_BASE)/hardware/arduino/variants/mega
@@ -235,7 +236,7 @@ extcoff: applet/$(TARGET).elf
 
 	# Link: create ELF output file from library.
 applet/$(TARGET).elf: $(SRC) applet/core.a  $(HEADERS)
-	$(CXX) $(ALL_CXXFLAGS) -o $@ $(SRC) -L. applet/core.a $(LDFLAGS)
+	$(CXX) $(SRCCDEF) $(ALL_CXXFLAGS) -o $@ $(SRC) -L. applet/core.a $(LDFLAGS)
 
 applet/core.a: $(CORE_OBJS)
 	@for i in $(CORE_OBJS); do echo $(AR) rcs applet/core.a $$i; $(AR) rcs applet/core.a $$i; done
