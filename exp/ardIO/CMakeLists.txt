@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 2.8)
+project( ardIO )
+find_package( libserial REQUIRED )
+add_executable( ardIO ardIO )
+target_link_libraries( ardIO /usr/lib )
