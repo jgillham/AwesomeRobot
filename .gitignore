@@ -35,4 +35,5 @@ applet/
 # Python files
 *.pyc
 
+# Other files
 *.out

@@ -1,7 +1,6 @@
-*.cpp text
-*.c text
-*.h text
-*.hpp text
-*.cxx text
-*.hxx text
 * text
+
+# Image files
+*.jpg binary
+*.png binary
+*.bmp binary
