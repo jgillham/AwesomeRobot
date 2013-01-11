@@ -3,9 +3,11 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="Lower Deck" />
+		<Option makefile_is_custom="1" />
+		<Option execution_dir="/home/personal/prg/cc/robot/src/ld" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="Headers/;CHeaders/;" />
+		<Option virtualFolders="Headers/;CHeaders/;Source/;MakeFile/;CPPHEADERS/;" />
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/Lower Deck" prefix_auto="1" extension_auto="1" />
@@ -34,6 +36,36 @@
 		</Compiler>
 		<Unit filename="inc/Settings.h">
 			<Option virtualFolder="CHeaders/" />
+		</Unit>
+		<Unit filename="src/ld/Arm.h">
+			<Option virtualFolder="CPPHEADERS/" />
+		</Unit>
+		<Unit filename="src/ld/DecodedMessage.h" />
+		<Unit filename="src/ld/IMU.h">
+			<Option virtualFolder="CPPHEADERS/" />
+		</Unit>
+		<Unit filename="src/ld/Makefile">
+			<Option virtualFolder="MakeFile/" />
+		</Unit>
+		<Unit filename="src/ld/Messenger.h">
+			<Option virtualFolder="CPPHEADERS/" />
+		</Unit>
+		<Unit filename="src/ld/RangeFinders.h">
+			<Option virtualFolder="CPPHEADERS/" />
+		</Unit>
+		<Unit filename="src/ld/StringBuilder.cpp" />
+		<Unit filename="src/ld/StringBuilder.h">
+			<Option virtualFolder="CPPHEADERS/" />
+		</Unit>
+		<Unit filename="src/ld/Support.h" />
+		<Unit filename="src/ld/Wheels.h">
+			<Option virtualFolder="CPPHEADERS/" />
+		</Unit>
+		<Unit filename="src/ld/ld.pde">
+			<Option virtualFolder="Source/" />
+		</Unit>
+		<Unit filename="src/ld/settings.mk">
+			<Option virtualFolder="MakeFile/" />
 		</Unit>
 		<Extensions>
 			<code_completion />

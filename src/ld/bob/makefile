@@ -1,0 +1,3 @@
+SRCCDEF=-D NDEBUG
+all:
+	make -C .. SRCCDEF="$(SRCCDEF)"

@@ -8,6 +8,12 @@
 #define ROBOT_SERIAL_PORT_SESSION_TIMEOUT 30
 // END Port Settings
 
+// BEGIN Message Settings
+#define ROBOT_SERIAL_MESSAGE_START ':'
+#define ROBOT_SERIAL_MESSAGE_STOP ';'
+
+// END Message Settings
+
 // BEGIN Services
 #define ROBOT_SERVICE_CAMERA 'C'
 #define ROBOT_SERVICE_IMO 'I'
