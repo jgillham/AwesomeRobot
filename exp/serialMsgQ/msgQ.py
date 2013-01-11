@@ -59,6 +59,9 @@ sessionTimer = makeTimer( SESSION_TIMEOUT )
 # Open the port to the arduino.
 ser = serial.Serial( port = PORT, baudrate = SPEED)
 
+# Avoid race condition
+time.sleep(2)
+
                     # Necessary initial value.
 byte = '+'
                     # What the PC sends and expects back.
