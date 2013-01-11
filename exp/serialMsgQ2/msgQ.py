@@ -123,7 +123,7 @@ while len( outBox ) > 0 and sessionTimer():
 			if len(inMessage) > 0:
 				confirmationNumber = inMessage[1:]
 				# Compare the numeric parts of the strings.
-				if confirmationNumber == (outBox[0])[2:-1]:
+				if len( outBox ) > 0 and confirmationNumber == (outBox[0])[2:-1]:
 					outBox.popleft()
 					print( "Confirmation#" + confirmationNumber + " received." )
 					hasSentMessage = 0
