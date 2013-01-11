@@ -18,7 +18,7 @@
  * @author Josh Gillham
  * @version 12-20-12
  */
-class StringBuilder {
+class StingBuilder {
   private:
     // Declare type aliases.
     typedef char* CString;                // A pointer to a char array.
