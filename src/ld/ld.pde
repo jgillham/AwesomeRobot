@@ -1,19 +1,21 @@
-#include "StringBuilder.h"
+#include "ArrayBuilder.h"
 #include "Settings.h"
 
-extern StringBuilder serialOutBox;
+typedef ArrayBuilder< char > StringBuilder;
+StringBuilder serialOutBox;
 
 void establishContact();
 void readBytes( char buffer[], int numOfBytes );
+bool readMessage( StringBuilder& outMessage );
 
 void setup() {
-    Serial.begin( PORT_SPEED );
+    Serial.begin( ROBOT_SERIAL_PORT_SPEED );
     establishContact();
 }
 
 void loop() {
     if ( Serial.available() > 0 ) {
-        StringBuilder message();
+        StringBuilder message;
         if ( readMessage( message ) ) {
             // Message received and decode.
         }
@@ -34,6 +36,7 @@ void loop() {
  */
 bool readMessage( StringBuilder& outMessage ) {
     char chr;
+    bool foundMessage = false;
     while ( Serial.available() > 0 ) {
         chr = Serial.read();
         if ( chr == ROBOT_SERIAL_MESSAGE_START ) {
@@ -41,13 +44,13 @@ bool readMessage( StringBuilder& outMessage ) {
             outMessage.reset();
         }
         else if ( chr == ROBOT_SERIAL_MESSAGE_STOP ) {
-            if ( serialInBox.len() > 0 ) {
+            if ( outMessage.len() > 0 ) {
                 return true;
             }
             foundMessage = false;
         }
         else if ( foundMessage )
-            serialInBox.append( chr );
+            outMessage.append( chr );
     }
     return false;
 }
