@@ -316,5 +316,7 @@ clean:
 
 .PHONY:	all build elf hex eep lss sym program coff extcoff clean applet_files sizebefore sizeafter
 
--include $(CORE_SRCS:/%.c=build/%.d)
--include $(CORE_CXXSRC:/%.cpp=build/%.d)
+ifneq ($(MAKECMDGOALS),clean)
+include $(CORE_CXXSRC:/%.cpp=obj/%.d)
+include $(CORE_SRCS:/%.c=obj/%.d)
+endif
