@@ -1,3 +1,6 @@
+/**
+Appears to display the video to the window frame.
+*/
 #include "opencv2/opencv.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"

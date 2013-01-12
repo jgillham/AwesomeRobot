@@ -37,6 +37,10 @@ void setup()
   
 }
 
+/**
+Polls each serial channel and waits for a response on each.
+After polling each sets the motor positions.
+*/
 void loop()
 {
   

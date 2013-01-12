@@ -1,3 +1,6 @@
+/**
+Sends data to the arduino using the keyboard as the input.
+*/
 #include<iostream>
 #include <SerialStream.h>
 //#define PORT = "/dev/ttyACM0"

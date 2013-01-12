@@ -1,3 +1,6 @@
+/**
+Using the keyboard for input, sends angles down to arduino.
+*/
 #include<iostream>
 #include<cmath>
 #include <SerialStream.h>

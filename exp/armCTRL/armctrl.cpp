@@ -1,3 +1,10 @@
+/**
+Notes:
+Is this arduino code? No
+Sends angles down through the serial port to the arduino.
+*/
+
+
 #include "opencv2/opencv.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
