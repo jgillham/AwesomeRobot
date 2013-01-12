@@ -40,7 +40,12 @@
 		<Unit filename="src/ld/Arm.h">
 			<Option virtualFolder="CPPHEADERS/" />
 		</Unit>
-		<Unit filename="src/ld/DecodedMessage.h" />
+		<Unit filename="src/ld/ArrayBuilder.h">
+			<Option virtualFolder="CPPHEADERS/" />
+		</Unit>
+		<Unit filename="src/ld/DecodedMessage.h">
+			<Option virtualFolder="CPPHEADERS/" />
+		</Unit>
 		<Unit filename="src/ld/IMU.h">
 			<Option virtualFolder="CPPHEADERS/" />
 		</Unit>
@@ -50,14 +55,18 @@
 		<Unit filename="src/ld/Messenger.h">
 			<Option virtualFolder="CPPHEADERS/" />
 		</Unit>
+		<Unit filename="src/ld/Node.h">
+			<Option virtualFolder="CPPHEADERS/" />
+		</Unit>
 		<Unit filename="src/ld/RangeFinders.h">
 			<Option virtualFolder="CPPHEADERS/" />
 		</Unit>
-		<Unit filename="src/ld/StringBuilder.cpp" />
-		<Unit filename="src/ld/StringBuilder.h">
+		<Unit filename="src/ld/Support.cpp">
+			<Option virtualFolder="Source/" />
+		</Unit>
+		<Unit filename="src/ld/Support.h">
 			<Option virtualFolder="CPPHEADERS/" />
 		</Unit>
-		<Unit filename="src/ld/Support.h" />
 		<Unit filename="src/ld/Wheels.h">
 			<Option virtualFolder="CPPHEADERS/" />
 		</Unit>
