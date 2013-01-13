@@ -12,7 +12,7 @@
  */
 bool readMessage( HardwareSerial& serial, StringBuilder& outMessage ) {
     char chr;
-    bool foundMessage = false;
+    static bool foundMessage = false;
     while ( serial.available() > 0 ) {
         chr = serial.read();
         if ( chr == ROBOT_SERIAL_MESSAGE_START ) {
