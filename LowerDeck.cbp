@@ -7,7 +7,7 @@
 		<Option execution_dir="/home/personal/prg/cc/robot/src/ld" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="Headers/;CHeaders/;Source/;MakeFile/;CPPHEADERS/;" />
+		<Option virtualFolders="Headers/;CHeaders/;Source/;MakeFile/;CPPHEADERS/;Test/;" />
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/Lower Deck" prefix_auto="1" extension_auto="1" />
@@ -30,13 +30,14 @@
 					<Add option="-s" />
 				</Linker>
 			</Target>
+			<Target title="TestAll">
+				<Option type="4" />
+				<Option compiler="gcc" />
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="inc/Settings.h">
-			<Option virtualFolder="CHeaders/" />
-		</Unit>
 		<Unit filename="src/ld/Arm.h">
 			<Option virtualFolder="CPPHEADERS/" />
 		</Unit>
@@ -57,9 +58,14 @@
 		</Unit>
 		<Unit filename="src/ld/Node.h">
 			<Option virtualFolder="CPPHEADERS/" />
+			<Option target="Debug" />
+			<Option target="Release" />
 		</Unit>
 		<Unit filename="src/ld/RangeFinders.h">
 			<Option virtualFolder="CPPHEADERS/" />
+		</Unit>
+		<Unit filename="src/ld/Settings.h">
+			<Option virtualFolder="CHeaders/" />
 		</Unit>
 		<Unit filename="src/ld/Support.cpp">
 			<Option virtualFolder="Source/" />
@@ -75,6 +81,12 @@
 		</Unit>
 		<Unit filename="src/ld/settings.mk">
 			<Option virtualFolder="MakeFile/" />
+		</Unit>
+		<Unit filename="src/ld/test/SupportTest.cpp">
+			<Option virtualFolder="Test/" />
+		</Unit>
+		<Unit filename="src/ld/test/tests.h">
+			<Option virtualFolder="Test/" />
 		</Unit>
 		<Extensions>
 			<code_completion />
