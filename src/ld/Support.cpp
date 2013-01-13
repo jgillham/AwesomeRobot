@@ -32,17 +32,12 @@ bool readMessage( HardwareSerial& serial, StringBuilder& outMessage ) {
 }
 
 /**
- * Says hello until the other end says
- *  hello back by printing a byte upstream
- *  until a byte is received. This function
- *  could never terminate if a byte is not
+ * Waits for a greeting then returns a greeting. This
+ *  function could never terminate if a byte is not
  *  received.
  *
  * Preconditions:
  * -Serial.begin() has been called successfully.
- *
- * Post Condtions:
- * -Serial.available() should be <= 0.
  *
  * @param serial can take the "Serial" object.
  */
