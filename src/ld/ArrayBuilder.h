@@ -153,4 +153,7 @@ class ArrayBuilder {
         return const_cast< Constant_TPointer >( tip );
     }
 };
+
+typedef ArrayBuilder< char > StringBuilder;
+
 #endif
