@@ -40,6 +40,7 @@
 ############################################################################
 # Below here nothing should be changed...
 
+BOARDFILE=$(ARDUINO_BASE)/hardware/arduino/boards.txt
 ARDUINO =$(ARDUINO_BASE)/hardware/arduino/cores/arduino
 CORE_SRCS = $(wildcard $(ARDUINO)/*.c )
 VIRTUAL_PURE=applet/virtualPure.cpp
