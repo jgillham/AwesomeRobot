@@ -15,6 +15,7 @@ Dirs:
 	mkdir -p $(TESTBINDIR)
 	mkdir -p $(TESTRESULTSDIR)
 	mkdir -p $(TESTDIR)/obj
+cleanTestAll: clean
 clean::
 	rm -rf $(TESTDIR)/obj
 	rm -rf $(TESTDIR)/bin
