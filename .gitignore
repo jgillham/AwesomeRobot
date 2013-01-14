@@ -40,3 +40,4 @@ applet/
 
 # Vi
 *.swp
+*.cbTemp
