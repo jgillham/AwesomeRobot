@@ -30,5 +30,15 @@ extern int total_tests;
       status = false;\
     }\
   }
+#define TEST_EQUAL( E, A ) \
+  {\
+    ++total_assertions;\
+    if ( E != A ){\
+      printf( "Expected: %s = %d\nActual: %s = %d\n", #E, E, #A, A );\
+      printf( "Assertion of \"%s == %s\" failed!\nMore Info: File \"%s\"\nLine: %i Function: \"%s\"\n",#E,#A,__FILE__,__LINE__,__FUNCTION__ );\
+      ++bad_asserts;\
+      status = false;\
+    }\
+  }
 #endif // TESTS_HEADER_INCLUDED
 
