@@ -2,10 +2,13 @@
 #define SETTINGS_INCLUDED
 
 // BEGIN Port Setttings
-#define ROBOT_SERIAL_PORT_SPEED 9600
+#define ROBOT_SERIAL_PORT_SPEED 115200//9600
 #define ROBOT_SERIAL_PORT_ADDRESS "/dev/ttyACM0"
 #define ROBOT_SERIAL_PORT_HELLO_BYTE '+'
 #define ROBOT_SERIAL_PORT_SESSION_TIMEOUT 30
+#define ROBOT_MAX_MESSAGE_SIZE 200
+#define ROBOT_MSG_TERMINATOR ';'
+#define ROBOT_MSG_START ':'
 // END Port Settings
 
 // BEGIN Message Settings
@@ -25,7 +28,8 @@
 // END Services
 
 // BEGIN Responses
-
+#define ROBOT_RESPONSE_ERROR 'E'
+#define ROBOT_RESPONSE_COMFIRM 'C'
 // END Responses
 
 
