@@ -140,7 +140,7 @@ class ArrayBuilder {
      * @return the length of the string.
      */
     Count len() CONSTANT_METHOD NO_EXCEPTIONS  {
-        return INDEX_TO_COUNT( newCharIndex );
+        return INDEX_TO_COUNT( newCharIndex - 1 );
     }
 
     /**

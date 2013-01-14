@@ -292,7 +292,7 @@ obj/%.d: /%.cpp
 
 
 # Target: clean project.
-clean:
+clean::
 	rm -Rf applet obj build
 
 .PHONY:	all build elf hex eep lss sym program coff extcoff clean applet_files sizebefore sizeafter
