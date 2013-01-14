@@ -1,4 +1,22 @@
+"""
+This program sends messages to the arduino using a FIFO scheme. Each message
+ has an unique id tag. The program sends the first item on the deque and waits
+ for the confirmation.  When the program matches the ID tag, it removes the
+ first message from the deque.
 
+The program builds on the first example to show how to handle long waits for the
+ confirmations, dropped data, or damaged data. The message is sent then resent
+ every so often while the confirmation is not received. This system will ensure
+ the integrity of the data transfered.
+
+This program also waits for the arduino to send an alarm message.
+
+@author Josh Gillham
+@version 12-20-12
+"""
+
+
+## BEGIN Programmer settings. Please customize these according to your computer.
 
                         # Port description:
 PORT = "/dev/ttyACM0"
@@ -58,7 +76,7 @@ byte = '+'
                     # What the PC sends and expects back.
 pcByte = 'H'
                     # Wait 100 ms seconds while reading
-#ser.timeout = 0.1
+ser.timeout = 0.1
 
 
 # Make contact.
@@ -70,16 +88,12 @@ while byte != pcByte and sessionTimer():
   byte = ser.read()
   print( "Arduino says: " + byte )
 
+time.sleep(2)
+
 # Clear extra input and output in the buffers.
 ser.flushOutput()
-wait300 = makeTimer( 1 )
-while wait300():
-  pass
-print( "ser.inWaiting(): " + str( ser.inWaiting() ) )
 while ser.inWaiting() > 0:
   ser.flushInput()
-  print( "ser.inWaiting(): " + str( ser.inWaiting() ) )
-print( "ser.inWaiting(): " + str( ser.inWaiting() ) )
 print( "Made contact!" )
 connectedTime = time.time()
 
