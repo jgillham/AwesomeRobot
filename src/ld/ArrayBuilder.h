@@ -116,8 +116,7 @@ class ArrayBuilder {
      *
      * @return TRUE if the operation succeeds or FALSE otherwise.
      */
-    bool appends( Constant_TPointer str ) {
-      int len = strlen( str );
+    bool append( const T* array, int len ) {
       // Count the null also.
       if ( newCharIndex + len >= allocSize ) {
         //XXX The case of expand() return false should be handled better.
@@ -125,13 +124,11 @@ class ArrayBuilder {
           return false;
       }
 
-      char* end = tip + newCharIndex;
-      strcpy( end, str );
-      // Wind to the end.
-      while( newCharIndex != 0 ) {
-        ++newCharIndex;
-      }
+      memcpy( tip + newCharIndex * sizeof( T ), array, len * sizeof( T ) );
+      newCharIndex += len;
     }
+
+
 
     /**
      * Accesses the length of the string, that is,
