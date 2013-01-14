@@ -91,8 +91,8 @@ bool goodBehavior_readMessage() {
       HardwareSerial serial( ":;");
       StringBuilder message;
       TEST_(
-            readMessage( serial, message ),
-            printf( "FAILURE BECAUSE: readMessage should have found a message.\n" )
+            !readMessage( serial, message ),
+            printf( "FAILURE BECAUSE: readMessage should have NOT found a message.\n" )
       );
       TEST_(
             strlen( message ) == 0,
