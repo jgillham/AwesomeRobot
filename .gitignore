@@ -37,3 +37,6 @@ applet/
 
 # Other files
 *.out
+
+# Vi
+*.swp
