@@ -8,9 +8,8 @@ extern int total_tests;
 
 #define TEST_( A, FAIL_OUTPUT ) \
   {\
-    bool actual = A;\
     ++total_assertions;\
-    if ( !actual ){\
+    if ( !(A) ){\
       FAIL_OUTPUT;\
       printf( "Actual: %s = %s\nExpected: True\n", #A, "FALSE" );\
       printf( "Assertion failed!\nMore Info: File \"%s\"\nLine: %i Function: \"%s\"\n",__FILE__,__LINE__,__FUNCTION__ );\
