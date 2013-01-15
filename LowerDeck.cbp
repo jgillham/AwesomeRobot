@@ -38,8 +38,20 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="src/ld/Arm.cpp">
+			<Option virtualFolder="Source/" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
 		<Unit filename="src/ld/Arm.h">
 			<Option virtualFolder="CPPHEADERS/" />
+		</Unit>
+		<Unit filename="src/ld/ArmDriver.cpp">
+			<Option virtualFolder="Source/" />
+		</Unit>
+		<Unit filename="src/ld/ArmDriver.h">
+			<Option virtualFolder="CPPHEADERS/" />
+			<Option target="TestAll" />
 		</Unit>
 		<Unit filename="src/ld/ArrayBuilder.h">
 			<Option virtualFolder="CPPHEADERS/" />
@@ -81,6 +93,14 @@
 		</Unit>
 		<Unit filename="src/ld/settings.mk">
 			<Option virtualFolder="MakeFile/" />
+		</Unit>
+		<Unit filename="src/ld/test/ArmTest.cpp">
+			<Option virtualFolder="Test/" />
+			<Option target="TestAll" />
+		</Unit>
+		<Unit filename="src/ld/test/ArrayTest.cpp">
+			<Option virtualFolder="Test/" />
+			<Option target="TestAll" />
 		</Unit>
 		<Unit filename="src/ld/test/DecodedMessageTest.cpp">
 			<Option virtualFolder="Test/" />
