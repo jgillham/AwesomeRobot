@@ -1,6 +1,7 @@
 #include "Support.h"
 #include "Settings.h"
 #include "DecodedMessage.h"
+#include "Arm.h"
 
 typedef ArrayBuilder< char > StringBuilder;
 StringBuilder serialOutBox;
@@ -13,6 +14,7 @@ void setup() {
     delay( 100 );
 }
 char tempOutString[ROBOT_MAX_MESSAGE_SIZE];
+Arm armManager;
 
 void loop() {
     if ( Serial.available() > 0 ) {
@@ -61,6 +63,24 @@ void loop() {
                   }
                   break;
                 #endif
+                #ifdef HAS_ARM_SERVO
+                  case ROBOT_SERVICE_ARM_SERVO:
+                  {
+                    if ( result->list.len() == 3 ) {
+                        sprintf( tempOutString, "%c%c%d%c", ROBOT_MSG_START, ROBOT_RESPONSE_COMFIRM, result->messageID, ROBOT_MSG_TERMINATOR );
+                        serialOutBox.append( tempOutString, strlen( tempOutString ) );
+                        armManager.setNewTheta( result->list, millis() );
+
+                    }
+                    else {
+                        sprintf( tempOutString, "%c%c%dError: wrong number arguments to servo.",
+                            ROBOT_MSG_START, ROBOT_RESPONSE_ERROR, ROBOT_SERIAL_ERROR_WRONG_ARGUMENTS, ROBOT_MSG_TERMINATOR );
+                        serialOutBox.append( tempOutString, strlen( tempOutString ) );
+                    }
+
+                  }
+                  break;
+                #endif
                   default:
                   {
                     sprintf( tempOutString, "%c%c%dError: service does not exist%c",
@@ -77,6 +97,11 @@ void loop() {
             }
         }
     }
+    #ifdef HAS_ARM_SERVO
+    if ( armManager.inMove() ) {
+        armManager.moveAll( millis() );
+    }
+    #endif
     if ( serialOutBox.len() > 0 ) {
         Serial.write( (const char*)serialOutBox );
         serialOutBox.reset();
