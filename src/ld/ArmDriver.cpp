@@ -12,7 +12,7 @@ bool armServosInit( ) {
     R[2].attach(ARM_SERVO_ID3);
 }
 
-bool armServosWrite( int theta[] ) {
+bool armServosWrite( unsigned int theta[] ) {
     for( int i = 0; i < ARM_SERVOS; ++i ) {
         R[ i ].write( theta[ i ] );
     }

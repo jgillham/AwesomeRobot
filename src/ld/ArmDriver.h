@@ -4,7 +4,7 @@
 
 bool armServosInit( );
 
-bool armServosWrite( int theta[] );
+bool armServosWrite( unsigned int theta[] );
 
 #define ARM_SERVOS 3
 #define ARM_DELTA

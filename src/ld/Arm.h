@@ -8,14 +8,15 @@
 
 class Arm {
   public:
-    int newTheta[ARM_SERVOS];
-    int oldTheta[ARM_SERVOS];
-    int delay[ARM_SERVOS];
-    int startTime;
+    unsigned int newTheta[ARM_SERVOS];
+    unsigned int oldTheta[ARM_SERVOS];
+    unsigned int delay[ARM_SERVOS];
+    unsigned int startTime;
     //XXX needs to be singleton.
     Arm( );
-    void setNewTheta( int newTheta[ARM_SERVOS], int time );
-    void moveAll( int time );
+    void setNewTheta( unsigned int newTheta[ARM_SERVOS], unsigned int time );
+    void moveAll( unsigned int time );
+    bool inMove();
 
 };
 
