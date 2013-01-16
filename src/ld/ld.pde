@@ -1,20 +1,41 @@
+
+#include <Servo.h>
+
 #include "Support.h"
 #include "Settings.h"
 #include "DecodedMessage.h"
 #include "Arm.h"
+#include "ArrayBuilder.h"
 
-typedef ArrayBuilder< char > StringBuilder;
+#ifdef HAS_ARM_SERVO
+/// The arm servos.
+Servo R[ARM_SERVOS];
+/// Initial angles for the arm.
+Number initArmThetas[ ARM_SERVOS ] = { 0, 0, 0 };
+/// Tracks the arm and helps control it.
+Arm armManager( initArmThetas );
+#endif
+
 StringBuilder serialOutBox;
+/// A counter for out going IDs.
 int messageID = 0;
+/// A temporary buffer.
+char tempOutString[ROBOT_MAX_MESSAGE_SIZE];
 
 void setup() {
+    #ifdef HAS_ARM_SERVO
+    R[0].attach(ARM_SERVO_ID1);
+    R[1].attach(ARM_SERVO_ID2);
+    R[2].attach(ARM_SERVO_ID3);
+    for( int i = 0; i < ARM_SERVOS; ++i ) {
+        R[ i ].write( initArmThetas[ i ] );
+    }
+    #endif
     Serial.begin( ROBOT_SERIAL_PORT_SPEED );
     establishContact( Serial );
     Serial.flush();
     delay( 100 );
 }
-char tempOutString[ROBOT_MAX_MESSAGE_SIZE];
-Arm armManager;
 
 void loop() {
     if ( Serial.available() > 0 ) {
@@ -69,7 +90,8 @@ void loop() {
                     if ( result->list.len() == 3 ) {
                         sprintf( tempOutString, "%c%c%d%c", ROBOT_MSG_START, ROBOT_RESPONSE_COMFIRM, result->messageID, ROBOT_MSG_TERMINATOR );
                         serialOutBox.append( tempOutString, strlen( tempOutString ) );
-                        armManager.setNewTheta( result->list, millis() );
+                        armManager.setNewTheta( millis(), result->list );
+
 
                     }
                     else {
@@ -99,13 +121,21 @@ void loop() {
     }
     #ifdef HAS_ARM_SERVO
     if ( armManager.inMove() ) {
-        armManager.moveAll( millis() );
+        for(int i = 0; i < ARM_SERVOS; ++i ) {
+          int theta = armManager.currentTheta[ i ];
+          if ( armManager.move( i, millis(), &theta ) ) {
+              R[ i ].write( theta );
+              sprintf( tempOutString, "%carmWrite[%d]=%d%c", ROBOT_MSG_START, i, theta, ROBOT_MSG_TERMINATOR );
+              serialOutBox.append( tempOutString, strlen( tempOutString ) );
+          }
+        }
     }
     #endif
     if ( serialOutBox.len() > 0 ) {
         Serial.write( (const char*)serialOutBox );
         serialOutBox.reset();
     }
+    delay( 150 );
 }
 
 
