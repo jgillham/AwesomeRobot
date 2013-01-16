@@ -3,35 +3,22 @@
 
 #include "ArrayBuilder.h"
 #include <string.h>
+#include "Settings.h"
 
 class DecodedMessage {
   public:
-    typedef unsigned int Data;
-    typedef ArrayBuilder< Data > DataList;
+    typedef ArrayBuilder< Number > DataList;
 
     char type;
-    Data messageID;
+    Number messageID;
     DataList list;
 
     DecodedMessage() {
     }
 
-    DecodedMessage( char type, Data messageID )
+    DecodedMessage( char type, Number messageID )
         : type( type ), messageID( messageID ) {
     }
-
-    class BadMessage {
-        const char* msg;
-      public:
-        BadMessage( const char* message ): msg( message ) {
-        }
-        const char* what() {
-            return msg;
-        }
-
-    };
-
-
 };
 
 DecodedMessage* decodeMessage( const char* message );

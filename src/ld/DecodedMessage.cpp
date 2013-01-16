@@ -21,9 +21,10 @@ DecodedMessage* decodeMessage( const char* message ) {
     printf( "nextNumber: %s\n", nextNumber );
     while( nextNumber ) {
 
-        DecodedMessage::Data number;
-        if ( sscanf( nextNumber + 1, "%d%*s", &number ) != 1 )
+        Number number;
+        if ( sscanf( nextNumber + 1, "%d%*s", &number ) != 1 ) {
             return 0;
+        }
         result.list.append( number );
         nextNumber = strchr( nextNumber + 1, ',' );
         printf( "nextNumber: %s\n", nextNumber );
