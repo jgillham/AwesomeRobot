@@ -1,4 +1,4 @@
-#include "DecodedMessage.h"
+#include "Message.h"
 
 #ifdef TESTING
 #include <cstdio>
@@ -7,9 +7,9 @@
 #endif
 
 
-DecodedMessage result;
+Message result;
 
-DecodedMessage* decodeMessage( const char* message ) {
+Message* decodeMessage( const char* message ) {
     result.list.reset();
     if ( sscanf( message, "%d%c", &(result.messageID), &(result.type) ) != 2 )
         return 0;

@@ -10,7 +10,7 @@
 
 
 // Pull in test file.
-#include "../DecodedMessage.cpp"
+#include "../Message.cpp"
 
 #undef delay
 #undef HardwareSerial

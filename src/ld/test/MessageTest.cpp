@@ -10,7 +10,7 @@
 
 
 // Pull in test file.
-#include "../DecodedMessage.cpp"
+#include "../Message.cpp"
 
 #undef delay
 #undef HardwareSerial
@@ -76,52 +76,44 @@ bool goodBehavior_decodeMessage() {
   bool status = true;
   ++total_tests;
   // Check an empty message.
-  try {
+  {
       const char* input = "12C";
-      DecodedMessage& actual = *decodeMessage( input );
+      Message& actual = *decodeMessage( input );
       TEST_EQUAL( 'C', actual.type );
       TEST_EQUAL( 12, actual.messageID );
   }
-  catch ( DecodedMessage::BadMessage* ex ) {
-      TEST_( 0, printf( "FAILURE BECAUSE: %s\n", ex->what() ) )
-  }
   // Check a message with one data piece.
-  try {
+  {
       const char* input = "50C13";
-      DecodedMessage& actual = *decodeMessage( input );
-      DecodedMessage expected( 'C', 50 );
+      Message& actual = *decodeMessage( input );
+      Message expected( 'C', 50 );
       TEST_EQUAL( 'C', actual.type );
       TEST_EQUAL( 50, actual.messageID );
       int length = actual.list.len();
       TEST_EQUAL( 1, length );
 
-      const unsigned int* dataList = (const unsigned int*)(actual.list);
+      const Number* dataList = (const Number*)(actual.list);
       TEST_EQUAL( 13, dataList[0] );
       printf( "dataList[0]: %d\n", dataList[0] );
 
 
   }
-  catch ( DecodedMessage::BadMessage* ex ) {
-      TEST_( 0, printf( "FAILURE BECAUSE: %s\n", ex->what() ) )
-  }
   // Check a message with one data piece.
-  try {
+  {
       const char* input = "11T223,5463";
-      DecodedMessage& actual = *decodeMessage( input );
+      Message& actual = *decodeMessage( input );
       TEST_EQUAL( 'T', actual.type );
       TEST_EQUAL( 11, actual.messageID );
       int length = actual.list.len();
       TEST_EQUAL( 2, length );
 
-      const unsigned int* dataList = (const unsigned int*)(actual.list);
+      const Number* dataList = (const Number*)(actual.list);
       TEST_EQUAL( 223, dataList[0] );
       TEST_EQUAL( 5463, dataList[1] );
 
 
   }
-  catch ( DecodedMessage::BadMessage* ex ) {
-      TEST_( 0, printf( "FAILURE BECAUSE: %s\n", ex->what() ) )
-  }
+
 
   if ( status )
     printf( "Test %s successful!\n", __FUNCTION__ );

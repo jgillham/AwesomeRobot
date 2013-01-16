@@ -5,7 +5,7 @@
 #include <string.h>
 #include "Settings.h"
 
-class DecodedMessage {
+class Message {
   public:
     typedef ArrayBuilder< Number > DataList;
 
@@ -13,15 +13,15 @@ class DecodedMessage {
     Number messageID;
     DataList list;
 
-    DecodedMessage() {
+    Message() {
     }
 
-    DecodedMessage( char type, Number messageID )
+    Message( char type, Number messageID )
         : type( type ), messageID( messageID ) {
     }
 };
 
-DecodedMessage* decodeMessage( const char* message );
+Message* decodeMessage( const char* message );
 
 #endif // DECODEDMESSAGE_CLASS_INCLUDED
 

@@ -56,19 +56,21 @@
 		<Unit filename="src/ld/ArrayBuilder.h">
 			<Option virtualFolder="CPPHEADERS/" />
 		</Unit>
-		<Unit filename="src/ld/DecodedMessage.cpp">
-			<Option virtualFolder="Source/" />
-			<Option target="Debug" />
-			<Option target="Release" />
-		</Unit>
-		<Unit filename="src/ld/DecodedMessage.h">
-			<Option virtualFolder="CPPHEADERS/" />
-		</Unit>
 		<Unit filename="src/ld/IMU.h">
 			<Option virtualFolder="CPPHEADERS/" />
 		</Unit>
 		<Unit filename="src/ld/Makefile">
 			<Option virtualFolder="MakeFile/" />
+		</Unit>
+		<Unit filename="src/ld/Message.cpp">
+			<Option virtualFolder="Source/" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="src/ld/Message.h">
+			<Option virtualFolder="CPPHEADERS/" />
+			<Option target="Debug" />
+			<Option target="Release" />
 		</Unit>
 		<Unit filename="src/ld/Messenger.h">
 			<Option virtualFolder="CPPHEADERS/" />
@@ -102,9 +104,8 @@
 			<Option virtualFolder="Test/" />
 			<Option target="TestAll" />
 		</Unit>
-		<Unit filename="src/ld/test/DecodedMessageTest.cpp">
+		<Unit filename="src/ld/test/MessageTest.cpp">
 			<Option virtualFolder="Test/" />
-			<Option target="TestAll" />
 		</Unit>
 		<Unit filename="src/ld/test/SupportTest.cpp">
 			<Option virtualFolder="Test/" />

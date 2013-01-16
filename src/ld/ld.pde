@@ -3,7 +3,7 @@
 
 #include "Support.h"
 #include "Settings.h"
-#include "DecodedMessage.h"
+#include "Message.h"
 #include "Arm.h"
 #include "ArrayBuilder.h"
 
@@ -41,7 +41,7 @@ void loop() {
     if ( Serial.available() > 0 ) {
         StringBuilder message;
         if ( readMessage( Serial, message ) ) {
-            DecodedMessage* result = decodeMessage( message );
+            Message* result = decodeMessage( message );
             if ( result != 0 ) {
                 switch( result->type ) {
                 #ifdef HAS_WHEEL_MOTOR
