@@ -48,5 +48,7 @@
 #define HAS_ARM_SERVO
 // END Onboard Services
 
+typedef int Number;
+
 #endif // SETTINGS_INCLUDED
 
