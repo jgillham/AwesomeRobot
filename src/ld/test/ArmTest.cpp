@@ -40,16 +40,6 @@ class HardwareSerial {
     void write(char) {
     }
 };
-bool armServosInit( ) {
-}
-
-
-int lastThetaWritten2[ ARM_SERVOS ];
-bool armServosWrite( int theta[ARM_SERVOS] ) {
-    for( int i = 0; i < ARM_SERVOS; ++i ) {
-        lastThetaWritten2[ i ] = theta[ i ];
-    }
-}
 // END Mock Declarations
 
 // Forward declaration.
@@ -77,52 +67,160 @@ int total_tests = 0;
 // END Results
 
 /**
- * Proves decodeMessage will convert a string message into
- *  a decodedMessage in most cases.
+ * Proves the arm will move forward.
  *
  * @return TRUE if the test succeeds.
  */
-bool goodBehavior_integration() {
+bool goodBehavior_integration_positive_angles() {
   bool status = true;
   ++total_tests;
-  // Check after appending a string.
+  // Check moving 3 degrees in 3 steps.
   {
-      Arm instance;
-      int newTheta[ ARM_SERVOS ] = { 30, 30, 30 };
+      Number initTheta[ ARM_SERVOS ] = { 0, 0, 0 };
+      Number newTheta[ ARM_SERVOS ] = { 3, 3, 3 };
+      Arm instance( initTheta );
+      TEST_( !instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
       int time = 5000;
-      instance.setNewTheta( newTheta, 5000 );
-      TEST_EQUAL( 30, instance.newTheta[ 0 ] );
-      TEST_EQUAL( 30, instance.newTheta[ 1 ] );
-      TEST_EQUAL( 30, instance.newTheta[ 2 ] );
-      TEST_EQUAL( 15, instance.delay[ 0 ] );
-      TEST_EQUAL( 15, instance.delay[ 1 ] );
-      TEST_EQUAL( 15, instance.delay[ 2 ] );
+      Number tempTheta;
+      instance.setNewTheta( time, newTheta );
+      for( int s = 0; s < ARM_SERVOS; ++s ) {
+          TEST_EQUAL( ARM_DELAYMS, instance.delay[ s ] );
+          TEST_EQUAL( newTheta[ s ], instance.newTheta[ s ] );
+      }
+      TEST_( instance.inMove(), printf( "FAILURE BECAUSE: arm should be in a move.\n" )  );
 
-      for( int i = 0; i <= 30; ++i ) {
-          for( ; time < ARM_DELAYMS; ++time ) {
-              instance.moveAll( time );
-              TEST_EQUAL( time / ARM_DELAYMS, lastThetaWritten2[ 0 ] );
-              TEST_EQUAL( time / ARM_DELAYMS, lastThetaWritten2[ 1 ] );
-              TEST_EQUAL( time / ARM_DELAYMS, lastThetaWritten2[ 2 ] );
-          }
+      time += ARM_DELAYMS;
+      for( int s = 0; s < ARM_SERVOS; ++s ) {
+          TEST_EQUAL( true, instance.move( s, time, &tempTheta ) );
+          TEST_EQUAL( 1, tempTheta );
+      }
+      TEST_( instance.inMove(), printf( "FAILURE BECAUSE: arm should be in a move.\n" )  );
+
+      time += ARM_DELAYMS;
+      for( int s = 0; s < ARM_SERVOS; ++s ) {
+          TEST_EQUAL( true, instance.move( s, time, &tempTheta ) );
+          TEST_EQUAL( 2, tempTheta );
+      }
+      TEST_( instance.inMove(), printf( "FAILURE BECAUSE: arm should be in a move.\n" )  );
+
+      time += ARM_DELAYMS;
+      for( int s = 0; s < ARM_SERVOS; ++s ) {
+          TEST_EQUAL( true, instance.move( s, time, &tempTheta ) );
+          TEST_EQUAL( 3, tempTheta );
       }
 
+      TEST_( !instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
+      for( int s = 0; s < ARM_SERVOS; ++s ) {
+          TEST_EQUAL( false, instance.move( s, time, 0 ) );
+      }
+      time += ARM_DELAYMS;
+      TEST_( !instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
+      for( int s = 0; s < ARM_SERVOS; ++s ) {
+          TEST_EQUAL( false, instance.move( s, time, 0 ) );
+      }
 
-      time = 5000;
-      instance.moveAll( time += ARM_DELAYMS );
-      TEST_EQUAL( 1, lastThetaWritten2[ 0 ] );
-      TEST_EQUAL( 1, lastThetaWritten2[ 1 ] );
-      TEST_EQUAL( 1, lastThetaWritten2[ 2 ] );
+      time += ARM_DELAYMS;
+      TEST_( !instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
+      for( int s = 0; s < ARM_SERVOS; ++s ) {
+          TEST_EQUAL( false, instance.move( s, time, 0 ) );
+      }
+  }
 
-      instance.moveAll( time += ARM_DELAYMS / 2 );
-      TEST_EQUAL( 1, lastThetaWritten2[ 0 ] );
-      TEST_EQUAL( 1, lastThetaWritten2[ 1 ] );
-      TEST_EQUAL( 1, lastThetaWritten2[ 2 ] );
+  // Check move 3 degrees in one step.
+  {
+      Number initTheta[ ARM_SERVOS ] = { 0, 0, 0 };
+      Number newTheta[ ARM_SERVOS ] = { 3, 3, 3 };
+      Arm instance( initTheta );
+      int time = 5000;
+      Number tempTheta;
+      instance.setNewTheta( time, newTheta );
+      for( int s = 0; s < ARM_SERVOS; ++s ) {
+          TEST_EQUAL( ARM_DELAYMS, instance.delay[ s ] );
+          TEST_EQUAL( newTheta[ s ], instance.newTheta[ s ] );
+      }
+      TEST_( instance.inMove(), printf( "FAILURE BECAUSE: arm should be in a move.\n" )  );
 
-      instance.moveAll( time += ARM_DELAYMS );
-      TEST_EQUAL( 2, lastThetaWritten2[ 0 ] );
-      TEST_EQUAL( 2, lastThetaWritten2[ 1 ] );
-      TEST_EQUAL( 2, lastThetaWritten2[ 2 ] );
+      time += ARM_DELAYMS * 3;
+      for( int s = 0; s < ARM_SERVOS; ++s ) {
+          TEST_EQUAL( true, instance.move( s, time, &tempTheta ) );
+          TEST_EQUAL( 3, tempTheta );
+      }
+      TEST_( !instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
+
+      time += ARM_DELAYMS;
+      for( int s = 0; s < ARM_SERVOS; ++s ) {
+          TEST_EQUAL( false, instance.move( s, time, 0 ) );
+      }
+      TEST_( !instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
+  }
+
+  // Check move 3 degrees in one step with large gap.
+  {
+      Number initTheta[ ARM_SERVOS ] = { 0, 0, 0 };
+      Number newTheta[ ARM_SERVOS ] = { 3, 3, 3 };
+      Arm instance( initTheta );
+      int time = 5000;
+      Number tempTheta;
+      instance.setNewTheta( time, newTheta );
+      for( int s = 0; s < ARM_SERVOS; ++s ) {
+          TEST_EQUAL( ARM_DELAYMS, instance.delay[ s ] );
+          TEST_EQUAL( newTheta[ s ], instance.newTheta[ s ] );
+      }
+      TEST_( instance.inMove(), printf( "FAILURE BECAUSE: arm should be in a move.\n" )  );
+
+      time += ARM_DELAYMS * 30;
+      for( int s = 0; s < ARM_SERVOS; ++s ) {
+          TEST_EQUAL( true, instance.move( s, time, &tempTheta ) );
+          TEST_EQUAL( 3, tempTheta );
+      }
+      TEST_( !instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
+
+      for( int s = 0; s < ARM_SERVOS; ++s ) {
+          TEST_EQUAL( false, instance.move( s, time, 0 ) );
+      }
+      TEST_( !instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
+      time += ARM_DELAYMS;
+      for( int s = 0; s < ARM_SERVOS; ++s ) {
+          TEST_EQUAL( false, instance.move( s, time, 0 ) );
+      }
+      TEST_( !instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
+  }
+
+  // Check move 30 degrees in 30 steps.
+  {
+      const int MAX = 30;
+      Number initTheta[ ARM_SERVOS ] = { 0, 0, 0 };
+      Number newTheta[ ARM_SERVOS ] = { MAX, MAX, MAX };
+      Arm instance( initTheta );
+      int time = 5000;
+      Number tempTheta;
+      instance.setNewTheta( time, newTheta );
+      for( int s = 0; s < ARM_SERVOS; ++s ) {
+          TEST_EQUAL( ARM_DELAYMS, instance.delay[ s ] );
+          TEST_EQUAL( newTheta[ s ], instance.newTheta[ s ] );
+      }
+      TEST_( instance.inMove(), printf( "FAILURE BECAUSE: arm should be in a move.\n" )  );
+
+
+      for( int i = 1; i <= 30; ++i ) {
+          time += ARM_DELAYMS ;
+          TEST_( instance.inMove(), printf( "FAILURE BECAUSE: arm should be in a move.\n" )  );
+          for( int s = 0; s < ARM_SERVOS; ++s ) {
+              TEST_EQUAL( true, instance.move( s, time, &tempTheta ) );
+              TEST_EQUAL( i, tempTheta );
+          }
+      }
+      TEST_( !instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
+
+      for( int s = 0; s < ARM_SERVOS; ++s ) {
+          TEST_EQUAL( false, instance.move( s, time, 0 ) );
+      }
+      TEST_( !instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
+      time += ARM_DELAYMS;
+      for( int s = 0; s < ARM_SERVOS; ++s ) {
+          TEST_EQUAL( false, instance.move( s, time, 0 ) );
+      }
+      TEST_( !instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
   }
 
   if ( status )
@@ -141,7 +239,7 @@ int goodBehavior_TestSuite(){
   printf( "BEGIN Good Behavior Tests\n");
 
     // Run each test and count the successes.
-  if ( !goodBehavior_integration() )
+  if ( !goodBehavior_integration_positive_angles() )
     ++bad_tests;
 
   printf( "END Good Behavior Tests\n");
