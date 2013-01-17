@@ -22,6 +22,7 @@ class Message {
 };
 
 Message* decodeMessage( const char* message );
+bool encodeMessage( Message& message, char* outBuffer );
 
 #endif // DECODEDMESSAGE_CLASS_INCLUDED
 
