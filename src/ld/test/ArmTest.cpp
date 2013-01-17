@@ -109,7 +109,7 @@ bool goodBehavior_integration_positive_angles() {
           TEST_EQUAL( 3, tempTheta );
       }
 
-      TEST_( !instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
+      TEST_( instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
       for( int s = 0; s < ARM_SERVOS; ++s ) {
           TEST_EQUAL( false, instance.move( s, time, 0 ) );
       }
@@ -145,7 +145,7 @@ bool goodBehavior_integration_positive_angles() {
           TEST_EQUAL( true, instance.move( s, time, &tempTheta ) );
           TEST_EQUAL( 3, tempTheta );
       }
-      TEST_( !instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
+      TEST_( instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
 
       time += ARM_DELAYMS;
       for( int s = 0; s < ARM_SERVOS; ++s ) {
@@ -173,7 +173,7 @@ bool goodBehavior_integration_positive_angles() {
           TEST_EQUAL( true, instance.move( s, time, &tempTheta ) );
           TEST_EQUAL( 3, tempTheta );
       }
-      TEST_( !instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
+      TEST_( instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
 
       for( int s = 0; s < ARM_SERVOS; ++s ) {
           TEST_EQUAL( false, instance.move( s, time, 0 ) );
@@ -210,7 +210,7 @@ bool goodBehavior_integration_positive_angles() {
               TEST_EQUAL( i, tempTheta );
           }
       }
-      TEST_( !instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
+      TEST_( instance.inMove(), printf( "FAILURE BECAUSE: arm should not be in a move.\n" )  );
 
       for( int s = 0; s < ARM_SERVOS; ++s ) {
           TEST_EQUAL( false, instance.move( s, time, 0 ) );
