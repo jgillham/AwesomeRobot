@@ -22,7 +22,9 @@ clean::
 	rm -rf $(TESTDIR)/results
 
 $(TESTRESULTSDIR)/%.out: $(TESTBINDIR)/%
-	$< && RET=$? | tee $@ && exit $(RET)
+	echo "BEGIN Testing $<"
+	$< | tee $@
+	echo "END Testing $<"
 
 $(TESTBINDIR)/%: $(TESTDIR)/%.cpp $(wildcard *.h)
 	g++ $(SRCCDEF) $(CXXFLAGS) -o $@ $<
