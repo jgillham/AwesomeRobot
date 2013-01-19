@@ -8,24 +8,19 @@
 #include <string.h>
 
 
-
-// Pull in test file.
-#include "../Message.cpp"
-
-#undef delay
-#undef HardwareSerial
-
 // BEGIN Mock Declarations
 #include <malloc.h>
 void delay( int ) {
 }
 class HardwareSerial {
-  private:
+  public:
     const char* buffer;
     int nextChar;
-  public:
-    HardwareSerial( const char* buffer )
-        : buffer( buffer ), nextChar( 0 ) {
+    char outBuffer[1000];
+    int out_nextChar;
+    HardwareSerial( )
+            : nextChar( 0 ), out_nextChar( 0 ) {
+        outBuffer[0] = '\0';
     }
     char read() {
         char ret = buffer[ nextChar ];
@@ -37,10 +32,31 @@ class HardwareSerial {
     int available() {
         return strlen( buffer + nextChar );
     }
-    void write(char) {
+    void write( char out ) {
+        outBuffer[ out_nextChar++ ] = out;
+        outBuffer[ out_nextChar ] = '\0';
+    }
+    void write( const char* out ) {
+        int len = strlen( out );
+        strcpy( outBuffer + out_nextChar, out );
+        out_nextChar += len;
+    }
+    void flush() {
+    }
+    void begin( int ) {
+    }
+    void print( int out ) {
+        int len = sprintf( outBuffer + out_nextChar, "%d", out );
+        out_nextChar += len;
     }
 };
+HardwareSerial Serial;
 // END Mock Declarations
+
+// Pull in test file.
+#include "../ld.pde"
+
+
 
 // Forward declaration.
 int goodBehavior_TestSuite();
@@ -66,54 +82,46 @@ int bad_tests = 0;
 int total_tests = 0;
 // END Results
 
+
 /**
  * Proves decodeMessage will convert a string message into
  *  a decodedMessage in most cases.
  *
  * @return TRUE if the test succeeds.
  */
-bool goodBehavior_decodeMessage() {
+bool goodBehavior_loop() {
   bool status = true;
   ++total_tests;
   // Check an empty message.
   {
-      const char* input = "12C";
-      Message& actual = *decodeMessage( input );
-      TEST_EQUAL( 'C', actual.type );
-      TEST_EQUAL( 12, actual.messageID );
+      Serial.buffer = ":J123;";
+      Serial.nextChar = 0;
+      const char* expected = ":C123;";
+      loop();
+      TEST_( strcmp( expected, Serial.outBuffer ) == 0,
+            printf( "FAILURE BECAUSE: expected \"%s\" and actual was \"%s\".\n", expected, Serial.outBuffer ) );
   }
-  // Check a message with one data piece.
+
+  if ( status )
+    printf( "Test %s successful!\n", __FUNCTION__ );
+  return status;
+}
+
+/**
+ * Proves decodeMessage will convert a string message into
+ *  a decodedMessage in most cases.
+ *
+ * @return TRUE if the test succeeds.
+ */
+bool goodBehavior_readMessage() {
+  bool status = true;
+  ++total_tests;
+  // Check an empty message.
   {
-      const char* input = "50C13";
-      Message& actual = *decodeMessage( input );
-      Message expected( 'C', 50 );
-      TEST_EQUAL( 'C', actual.type );
-      TEST_EQUAL( 50, actual.messageID );
-      int length = actual.list.len();
-      TEST_EQUAL( 1, length );
-
-      const Number* dataList = (const Number*)(actual.list);
-      TEST_EQUAL( 13, dataList[0] );
-      printf( "dataList[0]: %d\n", dataList[0] );
-
-
+      Serial.buffer = ":;";
+      Serial.nextChar = 0;
+      TEST_EQUAL( false, readMessage() );
   }
-  // Check a message with one data piece.
-  {
-      const char* input = "11T223,5463";
-      Message& actual = *decodeMessage( input );
-      TEST_EQUAL( 'T', actual.type );
-      TEST_EQUAL( 11, actual.messageID );
-      int length = actual.list.len();
-      TEST_EQUAL( 2, length );
-
-      const Number* dataList = (const Number*)(actual.list);
-      TEST_EQUAL( 223, dataList[0] );
-      TEST_EQUAL( 5463, dataList[1] );
-
-
-  }
-
 
   if ( status )
     printf( "Test %s successful!\n", __FUNCTION__ );
@@ -131,7 +139,10 @@ int goodBehavior_TestSuite(){
   printf( "BEGIN Good Behavior Tests\n");
 
     // Run each test and count the successes.
-  if ( !goodBehavior_decodeMessage() )
+  if ( !goodBehavior_readMessage() )
+    ++bad_tests;
+
+  if ( !goodBehavior_loop() )
     ++bad_tests;
 
   printf( "END Good Behavior Tests\n");

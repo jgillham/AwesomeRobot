@@ -38,57 +38,11 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="src/ld/Arm.cpp">
-			<Option virtualFolder="Source/" />
-			<Option target="Debug" />
-			<Option target="Release" />
-		</Unit>
-		<Unit filename="src/ld/Arm.h">
-			<Option virtualFolder="CPPHEADERS/" />
-		</Unit>
-		<Unit filename="src/ld/ArmDriver.cpp">
-			<Option virtualFolder="Source/" />
-		</Unit>
-		<Unit filename="src/ld/ArmDriver.h">
-			<Option virtualFolder="CPPHEADERS/" />
-			<Option target="TestAll" />
-		</Unit>
-		<Unit filename="src/ld/ArrayBuilder.h">
-			<Option virtualFolder="CPPHEADERS/" />
-		</Unit>
-		<Unit filename="src/ld/IMU.h">
-			<Option virtualFolder="CPPHEADERS/" />
-		</Unit>
 		<Unit filename="src/ld/Makefile">
 			<Option virtualFolder="MakeFile/" />
 		</Unit>
-		<Unit filename="src/ld/Message.cpp">
-			<Option virtualFolder="Source/" />
-			<Option target="Debug" />
-			<Option target="Release" />
-		</Unit>
-		<Unit filename="src/ld/Message.h">
-			<Option virtualFolder="CPPHEADERS/" />
-			<Option target="Debug" />
-			<Option target="Release" />
-		</Unit>
-		<Unit filename="src/ld/Messenger.h">
-			<Option virtualFolder="CPPHEADERS/" />
-		</Unit>
-		<Unit filename="src/ld/RangeFinders.h">
-			<Option virtualFolder="CPPHEADERS/" />
-		</Unit>
 		<Unit filename="src/ld/Settings.h">
 			<Option virtualFolder="CHeaders/" />
-		</Unit>
-		<Unit filename="src/ld/Support.cpp">
-			<Option virtualFolder="Source/" />
-		</Unit>
-		<Unit filename="src/ld/Support.h">
-			<Option virtualFolder="CPPHEADERS/" />
-		</Unit>
-		<Unit filename="src/ld/Wheels.h">
-			<Option virtualFolder="CPPHEADERS/" />
 		</Unit>
 		<Unit filename="src/ld/ld.pde">
 			<Option virtualFolder="Source/" />
@@ -96,18 +50,10 @@
 		<Unit filename="src/ld/settings.mk">
 			<Option virtualFolder="MakeFile/" />
 		</Unit>
-		<Unit filename="src/ld/test/ArmTest.cpp">
-			<Option virtualFolder="Test/" />
-			<Option target="TestAll" />
-		</Unit>
-		<Unit filename="src/ld/test/ArrayTest.cpp">
-			<Option virtualFolder="Test/" />
-			<Option target="TestAll" />
-		</Unit>
-		<Unit filename="src/ld/test/MessageTest.cpp">
+		<Unit filename="src/ld/test/testSerial.py">
 			<Option virtualFolder="Test/" />
 		</Unit>
-		<Unit filename="src/ld/test/SupportTest.cpp">
+		<Unit filename="src/ld/test/testld.cpp">
 			<Option virtualFolder="Test/" />
 		</Unit>
 		<Unit filename="src/ld/test/tests.h">

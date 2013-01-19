@@ -1,6 +1,8 @@
 
 #include "Settings.h"
+#ifndef TESTING
 #include "WProgram.h"
+#endif
 
 #ifdef HAS_ARM_SERVO
 /// The arm servos.
@@ -14,7 +16,7 @@ Arm armManager( initArmThetas );
 /// A counter for out going IDs.
 int messageID = 0;
 
-char inBoxBuffer[ 1000 ];
+char inBoxBuffer[ 1000 ] = "";
 int inBoxBuffer_newChar = 0;
 
 void establishContact( );
