@@ -92,6 +92,11 @@ int total_tests = 0;
 bool goodBehavior_loop() {
   bool status = true;
   ++total_tests;
+  char type;
+  int id;
+  TEST_EQUAL( 2,  sscanf( "L123", "%c%d", &type, &id ) );
+  TEST_EQUAL( 'L',  type );
+  TEST_EQUAL( 123,  id );
   // Check an empty message.
   {
       Serial.buffer = ":J123;";
@@ -100,6 +105,52 @@ bool goodBehavior_loop() {
       loop();
       TEST_( strcmp( expected, Serial.outBuffer ) == 0,
             printf( "FAILURE BECAUSE: expected \"%s\" and actual was \"%s\".\n", expected, Serial.outBuffer ) );
+  }
+
+  // Check a bad service.
+  {
+      Serial.buffer = ":*123;";
+      Serial.nextChar = 0;
+      loop();
+      char type;
+      int id;
+      TEST_EQUAL( 2, sscanf( Serial.outBuffer, "%c%d%*s", &type, &id ) );
+      TEST_EQUAL( ROBOT_RESPONSE_ERROR, type );
+      TEST_EQUAL( ROBOT_SERIAL_ERROR_NO_SERVICE, id );
+  }
+
+  // Check a bad message.
+  {
+      Serial.buffer = ":123;";
+      Serial.nextChar = 0;
+      loop();
+      char type;
+      int id;
+      TEST_EQUAL( 2, sscanf( Serial.outBuffer, "%c%d%*s", &type, &id ) );
+      TEST_EQUAL( ROBOT_RESPONSE_ERROR, type );
+      TEST_EQUAL( ROBOT_SERIAL_ERROR_BAD_MESSAGE, id );
+
+      Serial.buffer = ":ta123;";
+      Serial.nextChar = 0;
+      loop();
+      TEST_EQUAL( 2, sscanf( Serial.outBuffer, "%c%d%*s", &type, &id ) );
+      TEST_EQUAL( ROBOT_RESPONSE_ERROR, type );
+      TEST_EQUAL( ROBOT_SERIAL_ERROR_BAD_MESSAGE, id );
+  }
+
+  // Check a incomplete message.
+  {
+      Serial.buffer = ":123";
+      Serial.nextChar = 0;
+      loop();
+      char type;
+      int id;
+      TEST_EQUAL( 0, strlen( Serial.outBuffer ) );
+
+      Serial.buffer = "ta123;";
+      Serial.nextChar = 0;
+      loop();
+      TEST_EQUAL( 0, strlen( Serial.outBuffer ) );
   }
 
   if ( status )
