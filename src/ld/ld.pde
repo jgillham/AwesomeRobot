@@ -1,9 +1,40 @@
 #include "Settings.h"
 #ifndef TESTING
 #include "WProgram.h"
+#else
+#include "Arduino.h"
+#endif
+#include <Servo.h>
+
+#ifdef ROBOT_SERVICE_IRSENSOR_POLL
+
+Servo myservo[4];
+
+int DELAY = 55;
+int pos;
+int deltaPos = 1;
+int IRpin[] = {A0,A1};
+int pingPin[] = {30,31};
+int servoPin[] = {3,4};
+
+int PingFire(int servoNum) {
+    int pin = pingPin[servoNum];
+    pinMode(pin, OUTPUT);
+    digitalWrite(pin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(pin, HIGH);
+    delayMicroseconds(5);
+    digitalWrite(pin, LOW);
+    pinMode(pin, INPUT);
+    return pulseIn(pin,HIGH,20000);
+}
 #endif
 
 #ifdef ROBOT_SERVICE_ARM_SERVO
+#define ARM_SERVOS 3
+#define ARM_SERVO_ID1 5
+#define ARM_SERVO_ID2 6
+#define ARM_SERVO_ID3 10
 /// The arm servos.
 Servo R[ARM_SERVOS];
 /// Initial angles for the arm.
@@ -30,13 +61,17 @@ void setup() {
         R[ i ].write( initArmThetas[ i ] );
     }
     #endif
+    #ifdef ROBOT_SERVICE_IRSENSOR_POLL
+    for (int i = 0; i<2; i++) {
+        myservo[i].attach(servoPin[i]); //servos attach
+        myservo[i].write(0);
+    }
+    #endif
     Serial.begin( ROBOT_SERIAL_PORT_SPEED );
     establishContact( );
     Serial.flush();
     delay( 100 );
 }
-
-
 
 void loop() {
     if ( Serial.available() > 0 ) {
@@ -46,48 +81,64 @@ void loop() {
             int numOfVars = sscanf( inBoxBuffer, "%c%d", &type, &id );
             if ( numOfVars == 2 ) {
                 switch ( type ) {
-                #ifdef ROBOT_SERVICE_WHEEL_SPEED
-                  case ROBOT_SERVICE_WHEEL_SPEED: {
+                    #ifdef ROBOT_SERVICE_WHEEL_SPEED
+                case ROBOT_SERVICE_WHEEL_SPEED: {
                     Serial.write( ":C" );
                     Serial.print( id );
                     Serial.write( ';' );
-                  }
-                  break;
+                }
+                break;
                 #endif
                 #ifdef ROBOT_SERVICE_WHEEL_ANGLE
-                  case ROBOT_SERVICE_WHEEL_ANGLE: {
+                case ROBOT_SERVICE_WHEEL_ANGLE: {
                     Serial.write( ":C" );
                     Serial.print( id );
                     Serial.write( ';' );
-                  }
-                  break;
+                }
+                break;
                 #endif
                 #ifdef ROBOT_SERVICE_WHEEL_ENCODER
-                  case ROBOT_SERVICE_WHEEL_ENCODER: {
+                case ROBOT_SERVICE_WHEEL_ENCODER: {
                     Serial.write( ":C" );
                     Serial.print( id );
                     Serial.write( ';' );
-                  }
-                  break;
-                #endif
-                #ifdef ROBOT_SERVICE_IRSENSOR_SERVO
-                  case ROBOT_SERVICE_IRSENSOR_SERVO: {
-                    Serial.write( ':' );
-                    Serial.write( ROBOT_RESPONSE_COMFIRM );
-                    Serial.write( ';' );
-                  }
-                  break;
+                }
+                break;
                 #endif
                 #ifdef ROBOT_SERVICE_IRSENSOR_POLL
-                  case ROBOT_SERVICE_IRSENSOR_POLL: {
+                case ROBOT_SERVICE_IRSENSOR_POLL: {
                     Serial.write( ':' );
                     Serial.write( ROBOT_RESPONSE_COMFIRM );
                     Serial.write( ';' );
-                  }
-                  break;
+                    for (pos = 0; pos <= 180; pos += deltaPos) {
+                        int USreading[2];  //each eye's US reading in usec
+                        int IRreading[2];  //each eye's US reading in 5/1024 v
+                        unsigned long lastTime = millis();  //used to establish a minimum read time
+                        for (int i = 0; i<2; i++) {
+                            myservo[i].write(pos);
+                            USreading[i] = PingFire(i);  //this can be slow if we do it 4 times...might need more delicate code
+                            IRreading[i] = analogRead(IRpin[i]);
+                            //delay(DELAY);
+                        }
+                        while (millis() <= lastTime+DELAY) {} //wait for minimum read time to elapse, if nec
+                        for (int i=0; i<2; i++) {
+                            Serial.print( char(':'));
+                            Serial.print( char(pos));
+                            Serial.print( char(IRreading[i] & 255));
+                            Serial.print( char(IRreading[i] >> 8));
+                            Serial.print( char(USreading[i] & 255));
+                            Serial.print( char(USreading[i] >> 8));
+                            Serial.print( char(i)); //ServoNum
+                        }
+                    }
+                    for (int i = 0; i<2; i++) {
+                        myservo[i].write(0);
+                    }
+                }
+                break;
                 #endif
                 #ifdef ROBOT_SERVICE_ARM_SERVO
-                  case ROBOT_SERVICE_ARM_SERVO: {
+                case ROBOT_SERVICE_ARM_SERVO: {
                     int thetas[3];
                     numOfVars = sscanf( inBoxBuffer, "%*c%*d",
                                         &( thetas[0] ), &( thetas[1] ), &( thetas[2] ) );
@@ -106,10 +157,10 @@ void loop() {
                         Serial.write( "\";" );
                     }
 
-                  }
-                  break;
+                }
+                break;
                 #endif
-                  default: {
+                default: {
                     Serial.write( ':' );
                     Serial.write( ROBOT_RESPONSE_ERROR );
                     Serial.print( ROBOT_SERIAL_ERROR_NO_SERVICE );
@@ -117,7 +168,7 @@ void loop() {
                     Serial.write( inBoxBuffer );
                     Serial.write( "\";" );
 
-                  }
+                }
                 }
             } else {
                 Serial.write( ':' );
