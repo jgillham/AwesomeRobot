@@ -26,7 +26,7 @@ $(TESTRESULTSDIR)/%.out: $(TESTBINDIR)/%
 	$< | tee $@
 	echo "END Testing $<"
 
-$(TESTBINDIR)/%: $(TESTDIR)/%.cpp $(wildcard *.h)
+$(TESTBINDIR)/%: $(TESTDIR)/%.cpp $(wildcard *.h) $(wildcard *.pde)
 	g++ $(SRCCDEF) $(CXXFLAGS) -o $@ $<
 #	g++ $(SRCCDEF) $(CXXFLAGS) -I/usr/lib/avr/include -o $@ $<
 
