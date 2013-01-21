@@ -34,19 +34,10 @@
 // END Responses
 
 // BEGIN Error
-#define ROBOT_SERIAL_ERROR_BAD_DECODE 1
-#define ROBOT_SERIAL_ERROR_BAD_SERVICE 1
+#define ROBOT_SERIAL_ERROR_BAD_MESSAGE 1
+#define ROBOT_SERIAL_ERROR_NO_SERVICE 1
 #define ROBOT_SERIAL_ERROR_WRONG_ARGUMENTS 1
 // END Error
-
-// BEGIN Onboard Services (comment out services as necessary)
-//#define HAS_WHEEL_MOTOR
-//#define HAS_WHEEL_SERVO
-//#define HAS_WHEEL_ENCODER
-//#define HAS_IR_SERVO
-#define HAS_IR_SENSOR
-//#define HAS_ARM_SERVO
-// END Onboard Services
 
 typedef int Number;
 

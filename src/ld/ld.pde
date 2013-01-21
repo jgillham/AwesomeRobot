@@ -1,10 +1,9 @@
-
 #include "Settings.h"
 #ifndef TESTING
 #include "WProgram.h"
 #endif
 
-#ifdef HAS_ARM_SERVO
+#ifdef ROBOT_SERVICE_ARM_SERVO
 /// The arm servos.
 Servo R[ARM_SERVOS];
 /// Initial angles for the arm.
@@ -23,11 +22,11 @@ void establishContact( );
 bool readMessage( );
 
 void setup() {
-    #ifdef HAS_ARM_SERVO
+    #ifdef ROBOT_SERVICE_ARM_SERVO
     R[0].attach(ARM_SERVO_ID1);
     R[1].attach(ARM_SERVO_ID2);
     R[2].attach(ARM_SERVO_ID3);
-    for( int i = 0; i < ARM_SERVOS; ++i ) {
+    for ( int i = 0; i < ARM_SERVOS; ++i ) {
         R[ i ].write( initArmThetas[ i ] );
     }
     #endif
@@ -37,92 +36,93 @@ void setup() {
     delay( 100 );
 }
 
+
+
 void loop() {
     if ( Serial.available() > 0 ) {
         if ( readMessage( ) ) {
             char type;
             int id;
             int numOfVars = sscanf( inBoxBuffer, "%c%d", &type, &id );
-            if ( numOfVars != 2 ) {
-                switch( type ) {
-                #ifdef HAS_WHEEL_MOTOR
-                  case ROBOT_SERVICE_WHEEL_SPEED:
-                  {
+            if ( numOfVars == 2 ) {
+                switch ( type ) {
+                #ifdef ROBOT_SERVICE_WHEEL_SPEED
+                  case ROBOT_SERVICE_WHEEL_SPEED: {
                     Serial.write( ":C" );
                     Serial.print( id );
                     Serial.write( ';' );
                   }
                   break;
                 #endif
-                #ifdef HAS_WHEEL_SERVO
-                  case ROBOT_SERVICE_WHEEL_ANGLE:
-                  {
+                #ifdef ROBOT_SERVICE_WHEEL_ANGLE
+                  case ROBOT_SERVICE_WHEEL_ANGLE: {
                     Serial.write( ":C" );
                     Serial.print( id );
                     Serial.write( ';' );
                   }
                   break;
                 #endif
-                #ifdef HAS_WHEEL_ENCODER
-                  case ROBOT_SERVICE_WHEEL_ENCODER:
-                  {
+                #ifdef ROBOT_SERVICE_WHEEL_ENCODER
+                  case ROBOT_SERVICE_WHEEL_ENCODER: {
                     Serial.write( ":C" );
                     Serial.print( id );
                     Serial.write( ';' );
                   }
                   break;
                 #endif
-                #ifdef HAS_IR_SERVO
-                  case ROBOT_SERVICE_IRSENSOR_SERVO:
-                  {
-                    Serial.write( ":C" );
-                    Serial.print( id );
+                #ifdef ROBOT_SERVICE_IRSENSOR_SERVO
+                  case ROBOT_SERVICE_IRSENSOR_SERVO: {
+                    Serial.write( ':' );
+                    Serial.write( ROBOT_RESPONSE_COMFIRM );
                     Serial.write( ';' );
                   }
                   break;
                 #endif
-                #ifdef HAS_IR_SENSOR
-                  case ROBOT_SERVICE_IRSENSOR_POLL:
-                  {
-                    Serial.write( ":C" );
-                    Serial.print( id );
+                #ifdef ROBOT_SERVICE_IRSENSOR_POLL
+                  case ROBOT_SERVICE_IRSENSOR_POLL: {
+                    Serial.write( ':' );
+                    Serial.write( ROBOT_RESPONSE_COMFIRM );
                     Serial.write( ';' );
                   }
                   break;
                 #endif
-                #ifdef HAS_ARM_SERVO
-                  case ROBOT_SERVICE_ARM_SERVO:
-                  {
-//                    if ( result->list.len() == 3 ) {
-Serial.write( ":C" );
-Serial.print( id );
-Serial.write( ';' );
+                #ifdef ROBOT_SERVICE_ARM_SERVO
+                  case ROBOT_SERVICE_ARM_SERVO: {
+                    int thetas[3];
+                    numOfVars = sscanf( inBoxBuffer, "%*c%*d",
+                                        &( thetas[0] ), &( thetas[1] ), &( thetas[2] ) );
+                    if ( numOfVars == 3 ) {
+                        Serial.write( ':' );
+                        Serial.write( ROBOT_RESPONSE_COMFIRM );
+                        Serial.print( id );
+                        Serial.write( ';' );
                         armManager.setNewTheta( millis(), result->list );
-
-
-//                    }
-//                    else {
-//                        sprintf( tempOutString, "%c%c%dError: wrong number arguments to servo.",
-//                            ROBOT_MSG_START, ROBOT_RESPONSE_ERROR, ROBOT_SERIAL_ERROR_WRONG_ARGUMENTS, ROBOT_MSG_TERMINATOR );
-//                        serialOutBox.append( tempOutString, strlen( tempOutString ) );
-//                    }
+                    } else {
+                        Serial.write( ':' );
+                        Serial.write( ROBOT_RESPONSE_ERROR );
+                        Serial.print( ROBOT_SERIAL_ERROR_WRONG_ARGUMENTS );
+                        Serial.write( "Error: Wrong number of arguments. Message was\"" );
+                        Serial.write( inBoxBuffer );
+                        Serial.write( "\";" );
+                    }
 
                   }
                   break;
                 #endif
-                  default:
-                  {
-                    Serial.write( ":E" );
-                    Serial.print( id );
+                  default: {
+                    Serial.write( ':' );
+                    Serial.write( ROBOT_RESPONSE_ERROR );
+                    Serial.print( ROBOT_SERIAL_ERROR_NO_SERVICE );
                     Serial.write( "Error: No such service. Message was\"" );
                     Serial.write( inBoxBuffer );
                     Serial.write( "\";" );
 
                   }
                 }
-            }
-            else {
-                Serial.write( ":E" );
+            } else {
+                Serial.write( ':' );
+                Serial.write( ROBOT_RESPONSE_ERROR );
+                Serial.print( ROBOT_SERIAL_ERROR_BAD_MESSAGE );
                 Serial.write( "Error: Bad message. Message was\"" );
                 Serial.write( inBoxBuffer );
                 Serial.write( "\";" );
@@ -131,11 +131,11 @@ Serial.write( ';' );
     }
     #ifdef HAS_ARM_SERVO
     if ( armManager.inMove() ) {
-        for(int i = 0; i < ARM_SERVOS; ++i ) {
-          int theta = armManager.currentTheta[ i ];
-          if ( armManager.move( i, millis(), &theta ) ) {
-              R[ i ].write( theta );
-          }
+        for (int i = 0; i < ARM_SERVOS; ++i ) {
+            int theta = armManager.currentTheta[ i ];
+            if ( armManager.move( i, millis(), &theta ) ) {
+                R[ i ].write( theta );
+            }
         }
     }
     #endif
@@ -159,15 +159,13 @@ bool readMessage( ) {
         if ( chr == ROBOT_SERIAL_MESSAGE_START ) {
             foundMessage = true;
             inBoxBuffer_newChar = 0;
-        }
-        else if ( chr == ROBOT_SERIAL_MESSAGE_STOP ) {
+        } else if ( chr == ROBOT_SERIAL_MESSAGE_STOP ) {
             if ( inBoxBuffer_newChar != 0 ) {
                 inBoxBuffer[ inBoxBuffer_newChar ] = '\0';
                 return true;
             }
             foundMessage = false;
-        }
-        else if ( foundMessage )
+        } else if ( foundMessage )
             inBoxBuffer[ inBoxBuffer_newChar++ ] = chr;
     }
     inBoxBuffer[ inBoxBuffer_newChar ] = '\0';
@@ -185,11 +183,11 @@ bool readMessage( ) {
  * @param serial can take the "Serial" object.
  */
 void establishContact( ) {
-  while( Serial.available() <= 0 ) {
-    delay( 300 );
-  }
-  // Write back one char.
-  Serial.write( Serial.read() );
+    while ( Serial.available() <= 0 ) {
+        delay( 300 );
+    }
+    // Write back one char.
+    Serial.write( Serial.read() );
 }
 
 
