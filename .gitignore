@@ -41,3 +41,4 @@ applet/
 # Vi
 *.swp
 *.cbTemp
+*esktop.ini
