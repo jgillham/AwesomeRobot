@@ -50,7 +50,33 @@ class HardwareSerial {
         out_nextChar += len;
     }
 };
+#include <Servo.h>
+void Servo::write( int ) {
+}
+uint8_t Servo::attach( int ) {
+}
+void Servo::Servo( ) {
+}
 HardwareSerial Serial;
+#define A0 0
+#define A1 0
+#define OUTPUT 0x1
+#define INPUT 0x0
+#define LOW  0x0
+#define HIGH 0x1
+typedef unsigned char uint8_t;
+void digitalWrite(uint8_t pin, uint8_t val) {
+}
+void pinMode(uint8_t, uint8_t) {
+}
+void delayMicroseconds(unsigned int us) {
+}
+unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout = 1000000L) {
+}
+unsigned long millis(void) {
+}
+int analogRead(uint8_t pin) {
+}
 // END Mock Declarations
 
 // Pull in test file.

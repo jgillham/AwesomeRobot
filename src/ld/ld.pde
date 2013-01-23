@@ -1,8 +1,10 @@
 #include "Settings.h"
 #ifndef TESTING
-#include "WProgram.h"
-#else
-#include "Arduino.h"
+    #if ARDUINO >= 100
+        #include "Arduino.h"
+    #else
+        #include "WProgram.h"
+    #endif
 #endif
 #include <Servo.h>
 
