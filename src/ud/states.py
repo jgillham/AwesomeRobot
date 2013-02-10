@@ -2,14 +2,17 @@
 Module Tests:
 """
 
-class Base:
-    """
-    Class Tests:
-    >>> instance = Base()
-    """
-    def onIRReadingReceived( pos, IRlsb, IRmsb, USlsb, USmsb, eyeNum ):
+class Mode:
+	"""
+	Class Tests:
+	>>> instance = Base()
+	"""
+	def onMessageReceived( self, message ):
+		category = message[0]
+		if category == settings.SERVICE_IRSENSOR_POLL:
+			self.onIRReadingReceived( utility.Reading( message ) )
+	def onIRReadingReceived( self, reading ):
 		pass
-    pass
 
 class Go( Base ):
     """
@@ -38,3 +41,9 @@ class Grab( Base ):
     True
     """
     pass
+
+mode = Mode()
+messenger = Messenger( utility.SerialPort() )
+while True:
+    if messenger.checkInBox():
+        mode.onMessageReceived( messenger.getMessage() )

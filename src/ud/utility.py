@@ -21,8 +21,9 @@ class DataManager:
     """
 	pass
 
-class reading:
-	IR_maxRange = 5 
+class Reading:
+    # Static field
+	IR_maxRange = 5
 	def __init__(self, eyeNum, pos, IR_raw, US_raw):
 		self.pos = pos
 		self.eyeNum = eyeNum
@@ -35,6 +36,22 @@ class reading:
 		self.IR_feet = min(self.IR_feet, self.IR_maxRange)
 		self.US_feet = US_raw * 0.1
 
+	def __init__( self, message ):
+	    if len( message ) < 6
+            raise Exception( "Message is too small" )
+        else:
+            pos = ord( message[0] )
+            IRlsb = ord( message[1] )
+            IRmsb = ord( message[2] )
+            USlsb = ord( message[3] )
+            USmsb = ord( message[4] )
+            eyeNum = ord( message[5] )
+
+            IR = IRmsb * 255 + IRlsb
+            US = USmsb * 255 + USlsb
+
+            self( eyeNum, pos, IR, US )
+
 class Messenger:
     """
     Facilitates communication accrossed the serial port to the Arduino.
@@ -42,60 +59,53 @@ class Messenger:
     Class Tests:
     >>> instance = Messenger()
     """
-    def __init__( self ):
+    def __init__( self, serialWrapper ):
         self.__responseHandler = 0
         self.__buffer = ""
         self.__inBox = []
         self.__inMessage = False
+        self.__serialWrapper = serialWrapper
     def setResponseHandler( self, stateObject ):
         self.__responseHandler = stateObject
-    def checkInBox( self, serialWrapper ):
+    def checkInBox( self ):
+        """
+        Reads the bytes coming into the serial port while the buffer
+         is full.
+        @return True when a full message is received or False otherwise.
+        """
 		while True:
 			# Read input and received chars.
-			message = serialWrapper.read()
-			if message == False:
+			byte = serialWrapper.read()
+			if byte == False:
 				return False
 			else:
-				if message == ':':
+				if byte == ':':
 					self.__inMessage = True
-				else if message == ';':
-					self.__inMessage = False
+				else if byte == ';':
+				    self.__inMessage = False
+				    if len( self.__buffer ) > 0:
+				        self.__message = self.__buffer
+				        self.__buffer = ""
+				        return True
 				else if self.__inMessage:
 					self.__buffer = self.__buffer + message
-	def readIRMessage( self ):
-		#time.sleep(0.02) #--build buffer, may be useless
-		while self.ser.inWaiting() < 6:
-			pass
-		readout = list()
-		for i in range (6):
-			x = self.ser.read()
-			readout.append(x)
-		pos = ord(readout[0])
-		IRlsb = ord(readout [1])
-		IRmsb = ord(readout [2])
-		USlsb = ord(readout[3])
-		USmsb = ord(readout[4])	
-		eyeNum = ord(readout[5])
-		
-		out = "readout: "
-		for i in range(6):
-			pass
-			out +=repr(readout[i])
-		print(out)
-		
-		IR = IRmsb*255 + IRlsb
-		US = USmsb*255 + USlsb
-		#print(pos)
-		#print(eyeNum)
-		Reading = reading(eyeNum, pos, IR, US)
-		eyeList[eyeNum].IR[pos] = Reading.IR_feet
-		eyeList[eyeNum].US[pos] = Reading.US_feet
-		self.readingList.append(Reading)
-		print ("eyeNum:", eyeNum, "pos", pos)
-		if eyeNum == 1 and pos == 181:
-			return True
-		else:
-			return False
+    def getMessage( self ):
+        return copy.copy( self.__message )
+    def decodeIRMessage( self ):
+        if len( self.__message ) == 0:
+            return False
+        else:
+            pos = ord( self.__message[0] )
+            IRlsb = ord( self.__message[1] )
+            IRmsb = ord( self.__message[2] )
+            USlsb = ord( self.__message[3] )
+            USmsb = ord( self.__message[4] )
+            eyeNum = ord( self.__message[5] )
+
+            IR = IRmsb * 255 + IRlsb
+            US = USmsb * 255 + USlsb
+
+            return reading( eyeNum, pos, IR, US )
 
 
 class SerialPort:
@@ -147,7 +157,7 @@ class SerialPort:
         import settings
         self.__ser = serial.Serial( port = port, baudrate = settings.SERIAL_PORT_SPEED )
         # Wait 100 ms while reading.
-        ser.timeout = 0.1
+        #ser.timeout = 0.1
 
     def makeContact( self, timeout = settings.SERIAL_PORT_SESSION_TIMEOUT ):
         """
@@ -183,6 +193,25 @@ class SerialPort:
         ser.flushInput()
         ser.flushOutput()
         return True
+
+    def read( self ):
+        """
+        Reads a byte if there is one waiting in the buffer.
+
+        Returns:
+            The byte -- If one is availiable.
+            False -- If the buffer is empty.
+
+        Examples:
+            >>> import serial
+            >>> try:
+            ...     with SerialPort() as instance:
+            ...         instance.read()
+            ... except serial.SerialException as e:
+            ...     raise NameError( "This example requires an arduino plugged in and the correct port address." )
+
+        """
+        return ser.read()
 
     def read( self ):
         """
