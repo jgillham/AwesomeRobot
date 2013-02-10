@@ -7,6 +7,8 @@ class Base:
     Class Tests:
     >>> instance = Base()
     """
+    def onIRReadingReceived( pos, IRlsb, IRmsb, USlsb, USmsb, eyeNum ):
+		pass
     pass
 
 class Go( Base ):

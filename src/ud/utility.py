@@ -12,6 +12,29 @@ class Map:
     """
     pass
 
+class DataManager:
+	"""
+    Provides waypoints and other map data.
+
+    Class Tests:
+    >>> instance = DataManager()
+    """
+	pass
+
+class reading:
+	IR_maxRange = 5 
+	def __init__(self, eyeNum, pos, IR_raw, US_raw):
+		self.pos = pos
+		self.eyeNum = eyeNum
+		self.IR_raw = IR_raw
+		self.US_raw = US_raw
+		if self.IR_raw != 0:
+			self.IR_feet =  (2525.0*pow(IR_raw, - 0.85) - 4)/12
+		else:
+			self.IR_feet = 0
+		self.IR_feet = min(self.IR_feet, self.IR_maxRange)
+		self.US_feet = US_raw * 0.1
+
 class Messenger:
     """
     Facilitates communication accrossed the serial port to the Arduino.
@@ -21,8 +44,58 @@ class Messenger:
     """
     def __init__( self ):
         self.__responseHandler = 0
+        self.__buffer = ""
+        self.__inBox = []
+        self.__inMessage = False
     def setResponseHandler( self, stateObject ):
         self.__responseHandler = stateObject
+    def checkInBox( self, serialWrapper ):
+		while True:
+			# Read input and received chars.
+			message = serialWrapper.read()
+			if message == False:
+				return False
+			else:
+				if message == ':':
+					self.__inMessage = True
+				else if message == ';':
+					self.__inMessage = False
+				else if self.__inMessage:
+					self.__buffer = self.__buffer + message
+	def readIRMessage( self ):
+		#time.sleep(0.02) #--build buffer, may be useless
+		while self.ser.inWaiting() < 6:
+			pass
+		readout = list()
+		for i in range (6):
+			x = self.ser.read()
+			readout.append(x)
+		pos = ord(readout[0])
+		IRlsb = ord(readout [1])
+		IRmsb = ord(readout [2])
+		USlsb = ord(readout[3])
+		USmsb = ord(readout[4])	
+		eyeNum = ord(readout[5])
+		
+		out = "readout: "
+		for i in range(6):
+			pass
+			out +=repr(readout[i])
+		print(out)
+		
+		IR = IRmsb*255 + IRlsb
+		US = USmsb*255 + USlsb
+		#print(pos)
+		#print(eyeNum)
+		Reading = reading(eyeNum, pos, IR, US)
+		eyeList[eyeNum].IR[pos] = Reading.IR_feet
+		eyeList[eyeNum].US[pos] = Reading.US_feet
+		self.readingList.append(Reading)
+		print ("eyeNum:", eyeNum, "pos", pos)
+		if eyeNum == 1 and pos == 181:
+			return True
+		else:
+			return False
 
 
 class SerialPort:
@@ -111,7 +184,7 @@ class SerialPort:
         ser.flushOutput()
         return True
 
-    def readByteIfAvailiable( self ):
+    def read( self ):
         """
         Reads a byte if there is one waiting in the buffer.
 
@@ -123,7 +196,7 @@ class SerialPort:
             >>> import serial
             >>> try:
             ...     with SerialPort() as instance:
-            ...         instance.readByteIfAvailiable()
+            ...         instance.read()
             ... except serial.SerialException as e:
             ...     raise NameError( "This example requires an arduino plugged in and the correct port address." )
 
