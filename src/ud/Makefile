@@ -3,7 +3,7 @@ PYSRC=$(wildcard *.py)
 TESTRESULTS=$(PYSRC:%.py=test%.out)
 
 run:
-	python GoState.py
+	python modes.py
 Debug: Settings
 
 Release: Settings

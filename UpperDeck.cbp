@@ -26,9 +26,6 @@
 			<Add option="-Wall" />
 			<Add directory="inc" />
 		</Compiler>
-		<Unit filename="src/ud/Utility.py">
-			<Option virtualFolder="Python/" />
-		</Unit>
 		<Unit filename="src/ud/sensors.py">
 			<Option virtualFolder="Python/" />
 			<Option target="Debug" />
@@ -41,6 +38,9 @@
 			<Option target="Debug" />
 		</Unit>
 		<Unit filename="src/ud/support.py">
+			<Option virtualFolder="Python/" />
+		</Unit>
+		<Unit filename="src/ud/utility.py">
 			<Option virtualFolder="Python/" />
 		</Unit>
 		<Extensions>
