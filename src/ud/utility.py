@@ -13,44 +13,54 @@ class Map:
     pass
 
 class DataManager:
-	"""
+    """
     Provides waypoints and other map data.
 
     Class Tests:
     >>> instance = DataManager()
     """
-	pass
+    pass
 
 class Reading:
     # Static field
-	IR_maxRange = 5
-	def __init__(self, eyeNum, pos, IR_raw, US_raw):
-		self.pos = pos
-		self.eyeNum = eyeNum
-		self.IR_raw = IR_raw
-		self.US_raw = US_raw
-		if self.IR_raw != 0:
-			self.IR_feet =  (2525.0*pow(IR_raw, - 0.85) - 4)/12
-		else:
-			self.IR_feet = 0
-		self.IR_feet = min(self.IR_feet, self.IR_maxRange)
-		self.US_feet = US_raw * 0.1
+    IR_maxRange = 5
+    def __init__(self, eyeNum, pos, IR_raw, US_raw):
+        self.pos = pos
+        self.eyeNum = eyeNum
+        self.IR_raw = IR_raw
+        self.US_raw = US_raw
+        if self.IR_raw != 0:
+            self.IR_feet =  (2525.0*pow(IR_raw, - 0.85) - 4)/12
+        else:
+            self.IR_feet = 0
+        self.IR_feet = min(self.IR_feet, self.IR_maxRange)
+        self.US_feet = US_raw * 0.1
 
-	def __init__( self, message ):
-	    if len( message ) < 6
+    def __init__( self, message ):
+        if len( message ) < 7:
             raise Exception( "Message is too small" )
         else:
-            pos = ord( message[0] )
-            IRlsb = ord( message[1] )
-            IRmsb = ord( message[2] )
-            USlsb = ord( message[3] )
-            USmsb = ord( message[4] )
-            eyeNum = ord( message[5] )
+            # First char is the category.
+            pos = ord( message[1] )
+            IRlsb = ord( message[2] )
+            IRmsb = ord( message[3] )
+            USlsb = ord( message[4] )
+            USmsb = ord( message[5] )
+            eyeNum = ord( message[6] )
 
             IR = IRmsb * 255 + IRlsb
             US = USmsb * 255 + USlsb
-
-            self( eyeNum, pos, IR, US )
+            
+            self.pos = pos
+            self.eyeNum = eyeNum
+            self.IR_raw = IR
+            self.US_raw = US
+            if self.IR_raw != 0:
+                self.IR_feet =  (2525.0*pow(self.IR_raw, - 0.85) - 4)/12
+            else:
+                self.IR_feet = 0
+            self.IR_feet = min(self.IR_feet, self.IR_maxRange)
+            self.US_feet = self.US_raw * 0.1
 
 class Messenger:
     """
@@ -65,31 +75,43 @@ class Messenger:
         self.__inBox = []
         self.__inMessage = False
         self.__serialWrapper = serialWrapper
+        if not self.__serialWrapper.makeContact():
+            raise Exception( "Could not make contact." )
     def setResponseHandler( self, stateObject ):
         self.__responseHandler = stateObject
+    def sendMessage( self, charCategory ):
+        """
+        
+        """
+        id = 1
+        self.__serialWrapper.write( ":" )
+        self.__serialWrapper.write( charCategory )
+        self.__serialWrapper.write( id )
+        self.__serialWrapper.write( ";" )
     def checkInBox( self ):
         """
         Reads the bytes coming into the serial port while the buffer
          is full.
         @return True when a full message is received or False otherwise.
         """
-		while True:
-			# Read input and received chars.
-			byte = serialWrapper.read()
-			if byte == False:
-				return False
-			else:
-				if byte == ':':
-					self.__inMessage = True
-				else if byte == ';':
-				    self.__inMessage = False
-				    if len( self.__buffer ) > 0:
-				        self.__message = self.__buffer
-				        self.__buffer = ""
-				        return True
-				else if self.__inMessage:
-					self.__buffer = self.__buffer + message
+        while True:
+            # Read input and received chars.
+            byte = self.__serialWrapper.read()
+            if byte == False:
+                return False
+            else:
+                if byte == ':':
+                    self.__inMessage = True
+                elif byte == ';':
+                    self.__inMessage = False
+                    if len( self.__buffer ) > 0:
+                        self.__message = self.__buffer
+                        self.__buffer = ""
+                        return True
+                elif self.__inMessage:
+                    self.__buffer = self.__buffer + byte
     def getMessage( self ):
+        import copy
         return copy.copy( self.__message )
     def decodeIRMessage( self ):
         if len( self.__message ) == 0:
@@ -118,6 +140,8 @@ class SerialPort:
         >>> import settings
     """
     import settings
+    def __enter__( self ):
+        return self
 
     def __exit__( self, type, value, traceback ):
         """
@@ -149,13 +173,17 @@ class SerialPort:
             ...     print e
             could not open port /dev/fooBar: [Errno 2] No such file or directory: '/dev/fooBar'
             >>> try:
-            ...     with instanceOfSerialPort = SerialPort():
+            ...     with SerialPort() as instanceOfSerialPort:
+            ...         pass
             ... except serial.SerialException:
-            ...     raise NameError( "This example requires an arduino plugged in and the correct port address." )
+            ...     raise Exception( "This example requires an arduino plugged in and the correct port address." )
         """
         import serial
         import settings
+        import time
         self.__ser = serial.Serial( port = port, baudrate = settings.SERIAL_PORT_SPEED )
+        # Avoid race condition
+        time.sleep(2)
         # Wait 100 ms while reading.
         #ser.timeout = 0.1
 
@@ -180,21 +208,24 @@ class SerialPort:
             ...     raise NameError( "This example requires an arduino plugged in and the correct port address." )
             True
         """
+        import support
+        import settings
         sessionTimer = support.makeTimer( timeout )
+        pcByte = settings.SERIAL_PORT_HELLO_BYTE
         byte = 0
         while byte != settings.SERIAL_PORT_HELLO_BYTE:
             if not sessionTimer():
                 return False
-            ser.write( settings.SERIAL_PORT_HELLO_BYTE )
-            print( "PC says: " + pcByte )
-            byte = ser.read()
-            print( "Arduino says: " + byte )
+            self.__ser.write( settings.SERIAL_PORT_HELLO_BYTE )
+            #print( "PC says: " + pcByte )
+            byte = self.__ser.read()
+            #print( "Arduino says: " + byte )
         # Clear extra input and output in the buffers.
-        ser.flushInput()
-        ser.flushOutput()
+        self.__ser.flushInput()
+        self.__ser.flushOutput()
         return True
 
-    def read( self ):
+    def readAndWait( self ):
         """
         Reads a byte if there is one waiting in the buffer.
 
@@ -211,7 +242,7 @@ class SerialPort:
             ...     raise NameError( "This example requires an arduino plugged in and the correct port address." )
 
         """
-        return ser.read()
+        return __ser.read()
 
     def read( self ):
         """
@@ -231,7 +262,7 @@ class SerialPort:
 
         """
         if self.__ser.inWaiting() > 0:
-            return ser.read()
+            return self.__ser.read()
         else:
             return False
 
