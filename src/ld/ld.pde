@@ -125,12 +125,14 @@ void loop() {
                         while (millis() <= lastTime+DELAY) {} //wait for minimum read time to elapse, if nec
                         for (int i=0; i<2; i++) {
                             Serial.print( char(':'));
+                            Serial.write( ROBOT_SERVICE_IRSENSOR_POLL );
                             Serial.print( char(pos));
                             Serial.print( char(IRreading[i] & 255));
                             Serial.print( char(IRreading[i] >> 8));
                             Serial.print( char(USreading[i] & 255));
                             Serial.print( char(USreading[i] >> 8));
                             Serial.print( char(i)); //ServoNum
+                            Serial.print( char(';'));
                         }
                     }
                     for (int i = 0; i<2; i++) {
