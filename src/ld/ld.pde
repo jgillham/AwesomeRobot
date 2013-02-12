@@ -126,12 +126,18 @@ void loop() {
                         for (int i=0; i<2; i++) {
                             Serial.print( char(':'));
                             Serial.write( ROBOT_SERVICE_IRSENSOR_POLL );
-                            Serial.print( char(pos));
-                            Serial.print( char(IRreading[i] & 255));
-                            Serial.print( char(IRreading[i] >> 8));
-                            Serial.print( char(USreading[i] & 255));
-                            Serial.print( char(USreading[i] >> 8));
-                            Serial.print( char(i)); //ServoNum
+                            Serial.write( ',' );
+                            Serial.print( (pos));
+                            Serial.write( ',' );
+                            Serial.print( (IRreading[i] & 255));
+                            Serial.write( ',' );
+                            Serial.print( (IRreading[i] >> 8));
+                            Serial.write( ',' );
+                            Serial.print( (USreading[i] & 255));
+                            Serial.write( ',' );
+                            Serial.print( (USreading[i] >> 8));
+                            Serial.write( ',' );
+                            Serial.print( (i)); //ServoNum
                             Serial.print( char(';'));
                         }
                     }
