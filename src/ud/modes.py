@@ -8,13 +8,16 @@ class Mode:
     >>> instance = Mode()
     """
     def onMessageReceived( self, message ):
+        if __debug__ and not isinstance( message, str ):
+            raise raise TypeError, "Bad arguments: Should be a \"str\" type."
         import settings
         category = message[0]
         print message
         if category == settings.SERVICE_IRSENSOR_POLL:
             self.onIRReadingReceived( utility.Reading( message ) )
     def onIRReadingReceived( self, reading ):
-        pass
+        if __debug__ and not isinstance( message, utility.Reading ):
+            raise raise TypeError, "Bad arguments: Should be a \"utility.Reading\" type."
 
 class Go( Mode ):
     """
