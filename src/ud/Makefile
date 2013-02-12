@@ -3,12 +3,15 @@ PYSRC=$(wildcard *.py)
 TESTRESULTS=$(PYSRC:%.py=test%.out)
 
 run:
+	sed -i "s/\t/    /g" *.py
 	python modes.py
+
 Debug: Settings
 
 Release: Settings
 
 TestAll: Settings $(TESTRESULTS)
+	sed -i "s/\t/    /g" *.py
 
 Settings: settings.py
 
@@ -17,4 +20,3 @@ settings.py: ../ld/Settings.h
 
 test%.out: %.py
 	python -m doctest -v $< && RET=$? | tee $@ && exit $(RET)
-

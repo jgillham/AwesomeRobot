@@ -30,7 +30,7 @@ class TypedList(list):
         >>> l.append( i )
         >>> l.remove( i )
         """
-        if not isinstance( item, self._className ):
+        if __debug__ and not isinstance( item, self._className ):
             raise TypeError, "Bad arguments: Should be a " + self._className.__name__ + " type."
         super( TypedList, self ).append( item ) 
     def remove( self, item ):
@@ -42,7 +42,7 @@ class TypedList(list):
         ...     print "OK"
         OK
         """
-        if not isinstance( item, self._className ):
+        if __debug__ and not isinstance( item, self._className ):
             raise TypeError, "Bad arguments: Should be a " + self._className.__name__ + " type."
         super( TypedList, self ).remove( item )
 
@@ -56,7 +56,7 @@ class NodeList(TypedList):
         ...     print "OK"
         OK
         """
-        if not isinstance( item, self._className ):
+        if __debug__ and not isinstance( item, self._className ):
             raise TypeError, "Bad arguments: Should be a " + self._className.__name__ + " type."
         for link in item.links:
             for link2 in link.destination.links:
