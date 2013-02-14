@@ -8,7 +8,7 @@ class Map:
     Provides waypoints and other map data.
 
     Class Tests:
->>> instance = Map()
+    >>> instance = Map()
     """
     pass
 
@@ -17,7 +17,7 @@ class DataManager:
     Provides waypoints and other map data.
 
     Class Tests:
->>> instance = DataManager()
+    >>> instance = DataManager()
     """
     pass
 
@@ -67,17 +67,17 @@ class Messenger:
 
     Class Tests:
     """
-    def __init__( self, serialWrapper )
+    def __init__( self, serialWrapper ):
         """
         # Should not accept anything but SerialPort classes.
->>> try:
-...     instance = Messenger( "" )
-... except TypeError:
-...     print "OK"
-OK
+        >>> try:
+        ...     instance = Messenger( "" )
+        ... except TypeError:
+        ...     print "OK"
+        OK
         """
         if __debug__ and not isinstance( serialWrapper, SerialPort ):
-            raise raise TypeError, "Should be a \"SerialPort\" type."
+            raise TypeError, "Should be a \"SerialPort\" type."
         self.__responseHandler = 0
         self.__buffer = ""
         self.__inBox = []
@@ -90,14 +90,14 @@ OK
         """
         Examples
         # Should not accept anything but SerialPort classes.
->>> try:
-...     instance = Messenger.setResponseHandler( "", "" )
-... except TypeError:
-...     print "OK"
-OK
+        >>> try:
+        ...     instance = Messenger.setResponseHandler( "", "" )
+        ... except TypeError:
+        ...     print "OK"
+        OK
         """
         if __debug__ and not isinstance( stateObject, Mode ):
-            raise raise TypeError, "Should be a \"Mode\" type."
+            raise TypeError, "Should be a \"Mode\" type."
         self.__responseHandler = stateObject
     def sendMessage( self, charCategory, *fields ):
         """
@@ -117,17 +117,16 @@ OK
             Exception -- when the length of charCategory is not 1.
         Examples:
         # Should not accept anything but strings.
->>> try:
-...     instance = Messenger.sendMessage( "", 1 )
-... except TypeError:
-...     print "OK"
-OK
-        # Should not accept strings longer than 1 chars.
->>> try:
-...     instance = Messenger.sendMessage( "", "ab" )
-... except Exception:
-...     print "OK"
-OK
+        >>> try:
+        ...     instance = Messenger.sendMessage( "", 1 )
+        ... except TypeError:
+        ...     print "OK"
+        OK
+        >>> try:
+        ...     instance = Messenger.sendMessage( "", "ab" )
+        ... except Exception:
+        ...     print "OK"
+        OK
         """
         if __debug__:
             if not isinstance( charCategory, str ):
@@ -191,12 +190,12 @@ OK
 
 class SerialPort:
     """
-    Isolates the Python serial library of choose from other components of the brain and provides
-     easier testing.
+    Isolates the Python serial library of choose from other components of the 
+        brain and provides easier testing.
 
     Preconditions:
->>> import serial
->>> import settings
+    >>> import serial
+    >>> import settings
     """
     import settings
     def __enter__( self ):
@@ -207,12 +206,13 @@ class SerialPort:
         Deconstructor. Called automatically with the "with" statement.
 
         Example:
->>> import serial
->>> try:
-...     with SerialPort() as t:
-...         pass
-... except serial.SerialException:
-...     raise NameError( "This example requires an arduino plugged in and the correct port address." )
+        >>> import serial
+        >>> try:
+        ...     with SerialPort() as t:
+        ...         pass
+        ... except serial.SerialException:
+        ...     raise Exception( "This example requires an arduino" \
+                 " plugged in and the correct port address." )
         """
         if not isinstance(value, TypeError):
             self.__ser.close()
@@ -225,22 +225,24 @@ class SerialPort:
             SerialException -- When the port fails to open.
 
         Examples:
->>> import serial
->>> try:
-...     SerialPort( port = "/dev/fooBar" )
-... except serial.SerialException as e:
-...     print "OK"
-OK
->>> try:
-...     with SerialPort() as instanceOfSerialPort:
-...         pass
-... except serial.SerialException:
-...     raise Exception( "This example requires an arduino plugged in and the correct port address." )
+        >>> import serial
+        >>> try:
+        ...     SerialPort( port = "/dev/fooBar" )
+        ... except serial.SerialException as e:
+        ...     print "OK"
+        OK
+        >>> try:
+        ...     with SerialPort() as instanceOfSerialPort:
+        ...         pass
+        ... except serial.SerialException:
+        ...     raise Exception( "This example requires" \
+                 " an arduino plugged in and the correct port address." )
         """
         import serial
         import settings
         import time
-        self.__ser = serial.Serial( port = port, baudrate = settings.SERIAL_PORT_SPEED )
+        self.__ser = serial.Serial( 
+            port = port, baudrate = settings.SERIAL_PORT_SPEED )
         # Avoid race condition
         time.sleep(2)
         # Wait 100 ms while reading.
@@ -259,13 +261,14 @@ OK
             False -- If contact failed.
 
         Examples:
->>> import serial
->>> try:
-...     with SerialPort() as instance:
-...         instance.makeContact()
-... except serial.SerialException:
-...     raise NameError( "This example requires an arduino plugged in and the correct port address." )
-True
+        >>> import serial
+        >>> try:
+        ...     with SerialPort() as instance:
+        ...         instance.makeContact()
+        ... except serial.SerialException:
+        ...     raise Exception( "This example requires" \
+                 " an arduino plugged in and the correct port address." )
+        True
         """
         import support
         import settings
@@ -293,12 +296,13 @@ True
             False -- If the buffer is empty.
 
         Examples:
->>> import serial
->>> try:
-...     with SerialPort() as instance:
-...         instance.read()
-... except serial.SerialException as e:
-...     raise NameError( "This example requires an arduino plugged in and the correct port address." )
+        >>> import serial
+        >>> try:
+        ...     with SerialPort() as instance:
+        ...         instance.read()
+        ... except serial.SerialException as e:
+        ...     raise Exception( "This example requires" \
+                 " an arduino plugged in and the correct port address." )
         """
         return __ser.read()
 
@@ -311,13 +315,13 @@ True
             False -- If the buffer is empty.
 
         Examples:
->>> import serial
->>> try:
-...     with SerialPort() as instance:
-...         instance.read()
-... except serial.SerialException as e:
-...     raise NameError( "This example requires an arduino plugged in and the correct port address." )
-
+        >>> import serial
+        >>> try:
+        ...     with SerialPort() as instance:
+        ...         instance.read()
+        ... except serial.SerialException as e:
+        ...     raise Exception( "This example requires" \
+                 " an arduino plugged in and the correct port address." )
         """
         if self.__ser.inWaiting() > 0:
             return self.__ser.read()
@@ -326,16 +330,17 @@ True
 
     def close( self ):
         """
-            Closes the serial port connection.
+        Closes the serial port connection.
 
-            Examples:
->>> import serial
->>> try:
-...     connection = SerialPort()
-... except:
-...     raise NameError( "This example requires an arduino plugged in and the correct port address." )
-... else:
-...     connection.close()
+        Examples:
+        >>> import serial
+        >>> try:
+        ...     connection = SerialPort()
+        ... except:
+        ...     raise Exception( "This example requires" \
+                 " an arduino plugged in and the correct port address." )
+        ... else:
+        ...     connection.close()
         """
         self.__ser.close()
 
@@ -343,11 +348,12 @@ True
         """
         Writes a object that can be converted to a string to the serial port.
         Examples:
->>> import serial
->>> try:
-...     with SerialPort() as instance:
-...         instance.write( 'a' )
-... except serial.SerialException:
-...     raise NameError( "This example requires an arduino plugged in and the correct port address." )
+        >>> import serial
+        >>> try:
+        ...     with SerialPort() as instance:
+        ...         instance.write( 'a' )
+        ... except serial.SerialException:
+        ...     raise Exception( "This example requires" \
+                 " an arduino plugged in and the correct port address." )
         """
         self.__ser.write( str( serializable ) )
