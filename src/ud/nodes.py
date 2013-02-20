@@ -25,34 +25,32 @@ Examples:
 >>> nodes.append( n3 )
 >>> nodes.index( n3 )
 2
->>> l1 = Link( n2 )
->>> n1.links.append( l1 )
->>> n1.links.index( l1 )
+>>> l1 = Link( n1, n2 )
+>>> links.append( l1 )
+>>> links.index( l1 )
 0
->>> l2 = Link( n1 )
->>> n2.links.append( l2 )
->>> n2.links.index( l2 )
-0
->>> l3 = Link( n1 )
->>> n3.links.append( l3 )
->>> n3.links.index( l3 )
-0
->>> l4 = Link( n3 )
->>> n1.links.append( l4 )
->>> n1.links.index( l4 )
+>>> l2 = Link( n2, n1 )
+>>> links.append( l2 )
+>>> links.index( l2 )
 1
+>>> l3 = Link( n3, n1 )
+>>> links.append( l3 )
+>>> links.index( l3 )
+2
+>>> l4 = Link( n1, n3 )
+>>> links.append( l4 )
+>>> links.index( l4 )
+3
 >>> nodes.remove( n1 )
->>> try:
-...     n2.links.index( l2 )
-...     print "FAILURE"
-... except ValueError:
-...     print "OK"
+>>> for link in [ l1, l2, l3, l4 ]: 
+...     try:
+...         links.index( link )
+...         print "FAILURE"
+...     except ValueError:
+...         print "OK"
 OK
->>> try:
-...     n3.links.index( l3 )
-...     print "FAILURE"
-... except ValueError:
-...     print "OK"
+OK
+OK
 OK
 """
 
@@ -160,9 +158,6 @@ class NodeList(TypedList):
         Params:
             item -- is a Node class reference to be removed from the list.
 
-        Raises:
-            TypeError -- item is not a Node class.
-
         Examples:
         >>> l = NodeList( )
         >>> try:
@@ -170,15 +165,36 @@ class NodeList(TypedList):
         ... except TypeError:
         ...     print "OK"
         OK
+        >>> n1 = Node( 3, 1 )
+        >>> n2 = Node( 1, 3 )
+        >>> l.append( n1 )
+        >>> l.append( n2 )
+        >>> l1 = Link( n1, n2 )
+        >>> l2 = Link( n2, n1 )
+        >>> links.append( l1 )
+        >>> links.append( l2 )
+        >>> l.remove( n1 )
+        >>> l.index( n2 )
+        0
+        >>> len( l )
+        1
+        >>> l.count( n1 )
+        0
+        >>> links.count( l1 )
+        0
+        >>> links.count( l2 )
+        0
         """
-        if __debug__ and not isinstance( item, self._className ):
-            raise TypeError, "Bad arguments: Should be a " + \
-                self._className.__name__ + " type."
-        for link in item.links:
-            for link2 in link.destination.links:
-                if link2.destination == item:
-                    link.destination.links.remove( link2 )
         super( NodeList, self ).remove( item )
+        # Making a list of links to remove is necessary to ensure the iteration
+        #  continues correctly. Without this some links won't get removed.
+        needToRemove = []
+        for link in links:
+            if link.source == item or link.destination == item:
+                needToRemove.append( link )
+        # Remove bad links.
+        for link in needToRemove:
+                links.remove( link )
 
 class Node:
     """
@@ -193,8 +209,6 @@ class Node:
         >>> n = Node( 1, 2 )
         >>> isinstance( n.pos, XY )
         True
-        >>> isinstance( n.links, TypedList )
-        True
     """
     def __init__( self, XPos, YPos ):
         """
@@ -208,7 +222,6 @@ class Node:
             True
         """
         self.pos = XY( XPos, YPos )
-        self.links = TypedList( Link )
 
 class Link:
     """
@@ -221,33 +234,83 @@ class Link:
 
     Examples:
         >>> n = Node( 1, 2 )
-        >>> l = Link( n )
+        >>> s = Node( 3, 3 )
+        >>> l = Link( s, n )
         >>> l.destination == n
         True
+        >>> l.source == s
+        True
     """
-    def __init__( self, destination ):
+    def __init__( self, source, destination ):
         """
         Creates the class.
 
         Params:
             destination -- is a reference to the destination node.
+            source -- is a reference to the source node.
 
         Raises:
-            TypeError -- when destination is not a Node class.
+            TypeError -- when source or destination is not a Node class.
 
         Examples:
-            >>> isinstance( Link( Node( 2, 2 ) ), Link )
+            >>> isinstance( Link( Node( 3, 3 ), Node( 2, 2 ) ), Link )
             True
             >>> try:
-            ...     Link( 1 )
+            ...     Link( 1, 1 )
             ...     print "FAILURE"
             ... except TypeError:
             ...     print "OK"
             OK
         """
-        if __debug__ and not isinstance( destination, Node ):
-            raise TypeError, "Bad arguments: Should be a Node type."
+        if __debug__:
+            if not isinstance( destination, Node ) or not \
+             isinstance( source, Node ):
+                raise TypeError, "Bad arguments: Should be a Node type."
+        self.source = source
         self.destination = destination
+    def __getitem__( self, key ):
+        """
+        Examples:
+            >>> n1 = Node( 1, 1 )
+            >>> n2 = Node( 2, 2 )
+            >>> l = Link( n1, n2 )
+            >>> l[0] == n1
+            True
+            >>> l[1] == n2
+            True
+        """
+        if __debug__:
+            if not isinstance( key, int ):
+                raise TypeError, "Bad arguments: Should be a int type."
+            if key < 0 or key > 1:
+                raise KeyError, "Index out of range."
+        if key == 0:
+            return self.source
+        elif key == 1:
+            return self.destination
+    def __setitem__( self, key, value ):
+        """
+        Examples:
+            >>> n1 = Node( 1, 1 )
+            >>> n2 = Node( 2, 2 )
+            >>> l = Link( n1, n2 )
+            >>> n3 = Node( 3, 3 )
+            >>> l[0] = n3
+            >>> l[0] == n3
+            True
+            >>> l[1] = n1
+            >>> l[1] == n1
+            True
+        """
+        if __debug__:
+            if not isinstance( key, int ):
+                raise TypeError, "Bad arguments: Should be a int type."
+            if key < 0 or key > 1:
+                raise KeyError, "Index out of range."
+        if key == 0:
+            self.source = value
+        elif key == 1:
+            self.destination = value
 
 class XY:
     """
@@ -279,6 +342,7 @@ class XY:
         self.Y = Y
 
 nodes = NodeList( )
+links = TypedList( Link )
 
 def printNodes():
     """
